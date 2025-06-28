@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Familiars</title>
+  <link rel="manifest" href="manifest.json?v=56" />
+  <meta name="theme-color" content="#8ec9ff" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="My Familiars" />
+  <link rel="preload" as="image" href="images/bg-noomfoo-blue.png?v=56" />
+  <link rel="preload" as="image" href="images/icon-192.png?v=56" />
+  <link rel="preload" as="image" href="images/icon-512.png?v=56" />
+  <link rel="preload" as="audio" href="sound/pop.MP3?v=56">
+  <link rel="preload" as="audio" href="sound/Swipe-card.MP3?v=56">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Itim&display=swap" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="apple-touch-icon" href="images/icon-192.png?v=56" />
+  <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=56" />
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-27H58MHT85"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-27H58MHT85');
+  </script>
+</head>
+
+<body oncontextmenu="return false;">
+  <div class="app-container">
+    
+    <div id="spa-root"></div>
+    <div id="slide-screen"></div>
+
+    <div id="debug-menu" style="display: none; position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 15px; border-radius: 10px; z-index: 10001; font-family: Itim, sans-serif;">
+      <h4 style="margin: 0 0 10px 0; text-align: center; color: #ffab40;">เมนูผู้พัฒนา</h4>
+      <button id="debug-reset-draw" style="display: block; width: 100%; margin-bottom: 5px;">รีเซ็ตการสุ่ม</button>
+      <button id="debug-next-day" style="display: block; width: 100%; margin-bottom: 5px;">จำลองข้ามวัน</button>
+      <button id="debug-add-exp" style="display: block; width: 100%; margin-bottom: 5px;">+100 EXP</button>
+      <button id="debug-hard-reset" style="display: block; width: 100%; color: #ff5252;">ล้างข้อมูลทั้งหมด</button>
+    </div>
+    <!-- วางไว้ในนี้เท่านั้น -->
+    <div id="app-info">
+      <p>Lily A • Magic Books & Candle</p>
+      <p>Since 2025 • Version 1.1.1</p>
+      <p>
+        <a href="https://www.facebook.com/magicbooksandcandle" target="_blank" rel="noopener noreferrer">Facebook</a> |
+        <a href="https://www.youtube.com/@LilyAmagicbooksandcandle" target="_blank" rel="noopener noreferrer">YouTube</a> |
+        <a href="https://www.tiktok.com/@magicbooksncandle" target="_blank" rel="noopener noreferrer">TikTok</a> |
+        <a href="https://www.patreon.com/MagicBooksandCandle" target="_blank" rel="noopener noreferrer">Patreon</a>
+      </p>
+    </div>
+
+  </div>
+
+  <audio id="sfx-pop" src="sound/pop.MP3?v=56" preload="auto"></audio>
+  <audio id="sfx-swipe" src="sound/Swipe-card.MP3?v=56" preload="auto"></audio>
+
+  <script src="main.js?v=56"></script>
+
+  
+</body>
+</html>

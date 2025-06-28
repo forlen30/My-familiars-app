@@ -1,0 +1,1013 @@
+body, .app-container, .window, .encyclopedia-box, .wheel-box, .supporter-box {
+  user-select: none;
+  -webkit-user-select: none; /* สำหรับ Safari/iOS */
+}
+
+/* พื้นหลังและจัดศูนย์กลาง */
+html, body {
+  font-family: 'Itim', cursive, sans-serif !important;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  height: auto;
+  min-height: 100vh;
+  background-color: #bfe6ff;
+  background-image: url('images/bg-noomfoo-blue.png?v=56');
+  background-repeat: repeat;
+  background-size: auto;
+  background-position: top left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+ /*
+* {
+  cursor: url('images/cursor.png'), auto !important; 
+}
+*/
+  
+}
+
+/* กรอบแอป */
+.app-container {
+  width: 420px;
+  max-width: 95vw;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: rgba(212, 241, 255, 0.3); 
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 2rem;
+  padding-bottom: 50px;
+  box-sizing: border-box;
+  backdrop-filter: blur(4px);
+}
+
+#app-info {
+  font-size: 13px;
+  text-align: center;
+  opacity: 0.85;
+  color: #555;
+  margin-top: 2rem;
+  line-height: 1.6;
+  padding: 3rem;
+}
+
+#app-info a {
+  color: #6a5acd; /* ม่วงพาสเทล */
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 4px;
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+}
+
+#app-info a:hover {
+  color: #483d8b; /* ม่วงเข้มขึ้น */
+  text-decoration: underline;
+}
+
+#app-info a:active {
+  transform: scale(0.96);
+  color: #3a3470;
+}
+
+
+
+
+
+/* กล่องด้านใน */
+.window {
+  background: #f6fbff;
+  border: 3px solid #8ec9ff;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(142,201,255,0.15);
+  text-align: center;
+  font-family: 'Itim', cursive, sans-serif;
+  color: #261427;
+  position: relative; /* ← เพิ่มบรรทัดนี้ */ 
+}
+
+.card-in-box {
+  position: absolute;
+  left: -20px;
+  bottom: -20px;
+  width: 90px;
+  height: auto;
+  opacity: 1;
+  pointer-events: none;
+  z-index: 2;
+  transform: rotate(-24deg); /* ← เพิ่มบรรทัดนี้ */
+}
+
+
+.encyclopedia-box {
+  position: relative;
+  background: #e3f0ff;               
+  border: 3px solid #91c7f8;        
+  border-radius: 20px;
+  margin: 30px auto 0 auto;
+  padding: 18px 12px 14px 12px;
+  text-align: center;
+  font-size: 1.17em;                 
+  box-shadow: 0 4px 12px rgba(80,60,120,0.11);
+  opacity: 0.8;                         
+  transition: opacity 0.2s;
+  font-family: 'Itim', cursive, sans-serif;
+}
+
+.herb-leaf {
+  position: absolute;
+  left: -25px;
+  bottom: -25px;
+  width: 90px;
+  height: auto;
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.encyclopedia-box strong {
+  color: #8ec9ff;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  font-size: 1.12em;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.encyclopedia-box span {
+  color: #8ec9ff;
+  font-size: 0.96em;
+  font-style: italic;
+  display: block;
+}
+
+.my-familiars {
+  position: relative;
+  background: #e3f0ff;               
+  border: 3px solid #91c7f8;        
+  border-radius: 20px;
+  margin: 30px auto 0 auto;
+  padding: 18px 12px 14px 12px;
+  text-align: center;
+  font-size: 1.17em;                 
+  box-shadow: 0 4px 12px rgba(80,60,120,0.11);
+  opacity: 0.8;                         
+  transition: opacity 0.2s;
+  font-family: 'Itim', cursive, sans-serif;
+}
+
+.egg {
+  position: absolute;
+  left: -25px;
+  bottom: -25px;
+  width: 100px;
+  height: auto;
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 2;
+  transform: rotate(-8deg);
+}
+
+.my-familiars strong {
+  color: #8ec9ff;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  font-size: 1.12em;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.my-familiars span {
+  color: #8ec9ff;
+  font-size: 0.96em;
+  font-style: italic;
+  display: block;
+}
+
+.wheel-box {
+  position: relative;
+  background: #e3f0ff;               
+  border: 3px solid #91c7f8;        
+  border-radius: 20px;
+  margin: 30px auto 0 auto;
+  padding: 18px 12px 14px 12px;
+  text-align: center;
+  font-size: 1.17em;                 
+  box-shadow: 0 4px 12px rgba(80,60,120,0.11);
+  opacity: 0.8;                         
+  transition: opacity 0.2s;
+  font-family: 'Itim', cursive, sans-serif;
+}
+
+.wheel-of-the-year {
+  position: absolute;
+  left: -15px;
+  bottom: -15px;
+  width: 90px;
+  pointer-events: none;
+  animation: spin 7s linear infinite;
+  opacity: 0.92;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+.wheel-box strong {
+  color: #8ec9ff;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  font-size: 1.12em;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.wheel-box span {
+  color: #8ec9ff;
+  font-size: 0.96em;
+  font-style: italic;
+  display: block;
+}
+
+.encyclopedia-box, .wheel-box, .my-familiars{
+  -webkit-tap-highlight-color: rgba(0,0,0,0.08);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+  cursor: pointer;
+  transition: 
+    box-shadow 0.15s,
+    filter 0.11s,
+    transform 0.09s,
+    background-color 0.15s;
+}
+
+.encyclopedia-box:hover,
+.wheel-box:hover,
+.my-familiars:hover {
+  filter: brightness(1.06) saturate(1.12);
+  box-shadow: 0 6px 22px rgba(142,201,255,0.15), 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.encyclopedia-box:active,
+.wheel-box:active,
+.my-familiars:active {
+  filter: brightness(0.95) saturate(1.05);
+  transform: scale(0.98) translateY(2px);
+  box-shadow: 0 2px 6px rgba(142,201,255,0.11), 0 1px 3px rgba(0,0,0,0.07);
+}
+
+.button, .button-group button {
+  background: #8ec9ff;
+  color: #215981;
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  display: inline-block;
+  font-family: 'Itim', cursive, sans-serif !important;
+  margin-top: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  white-space: nowrap;
+  transition:
+    box-shadow 0.1s,
+    transform 0.09s,
+    filter 0.1s;
+  box-shadow: 0 2px 8px rgba(255,183,221,0.13), 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.button:hover, .button-group button:hover {
+  filter: brightness(1.08) saturate(1.06);
+  transform: translateY(-2px) scale(1.035);
+  box-shadow: 0 6px 18px rgba(255,183,221,0.19), 0 4px 14px rgba(0,0,0,0.10);
+}
+
+.button:active, .button-group button:active {
+  filter: brightness(0.95) saturate(1.08);
+  transform: translateY(2px) scale(0.97);
+  box-shadow: 0 1px 2px rgba(255,183,221,0.10), 0 1px 3px rgba(0,0,0,0.09);
+}
+
+.button-group {
+  margin-top: 2em;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+
+img {
+  width: 150px;
+  border-radius: 15px;
+  margin-top: 15px;
+  -webkit-user-drag: none;
+}
+
+.card-flip {
+  perspective: 1000px;
+  width: 200px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.card-flip.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.card-front {
+  background-color: #fff;
+  border-radius: 15px;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.card-back {
+  background-image: url('images/card-back.png');
+  background-size: cover;
+  background-position: center;
+  background-color: #fff;
+  border-radius: 15px;
+}
+
+
+#card-title {
+  margin-top: 1em;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+#card-message {
+  margin-top: 0.5em;  /* เพิ่มช่องว่างจากชื่อ */
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+/* สไตล์ของกล่องคำแนะนำตอนที่ยังว่างเปล่า (จะไม่มีเส้น ไม่มีระยะห่าง) */
+.card-advice-text {
+  font-size: 1em;
+  color: #261427
+;
+  line-height: 1.7;
+  text-align: left;
+  /* เราจะย้าย margin, padding, border ไปไว้ข้างล่าง */
+}
+
+/* สไตล์ที่จะทำงาน "ก็ต่อเมื่อ" กล่องมีข้อความแล้ว */
+.card-advice-text:not(:empty) {
+  margin-top: 1.5em;
+  padding-top: 1em;
+  border-top: 1px solid #e0e0e0;
+}
+
+#slide-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(120deg, #b0e6ff 0%, #ffe3f0 100%);
+  transform: translateX(100%);
+  transition: transform 0.5s cubic-bezier(.77,0,.18,1);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+#slide-screen.active {
+  transform: translateX(0%);
+  pointer-events: all;
+}
+
+.supporter-box {
+  background: #f6fbff;
+  border: 3px solid #8ec9ff;
+  border-radius: 20px;
+  padding: 16px 14px;
+  margin: 30px auto 0 auto;
+  text-align: center;
+  font-size: 1.05em;
+  color: #261427;
+  box-shadow: 0 4px 8px rgba(142, 201, 255, 0.15);
+  font-family: 'Itim', cursive, sans-serif;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative; 
+}
+
+.love {
+  position: absolute;
+  left: -18px;
+  bottom: -18px;
+  width: 80px;
+  height: auto;
+  opacity: 1;
+  pointer-events: none;
+  z-index: 2;
+  transform: rotate(-24deg); /* ← เพิ่มบรรทัดนี้ */
+}
+
+.supporter-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(210, 140, 255, 0.2);
+}
+
+.supporter-box strong {
+  color: #261427;
+  font-size: 1.15em;
+  font-style: normal;
+  font-weight: bold;
+}
+
+.supporter-box span {
+  display: block;
+  margin-top: 20px;
+  font-size: 0.95em;
+  color: #261427;
+  font-style: normal;
+  font-weight: normal;
+  
+}
+
+.supporter-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  font-size: 1.05em;
+  color: #261427;
+  font-family: 'Itim', cursive;
+}
+
+.supporter-list li {
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.clickable-box {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  box-shadow: 0 2px 8px rgba(255,183,221,0.13), 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.clickable-box:hover {
+  filter: brightness(1.08) saturate(1.06);
+  transform: translateY(-2px) scale(1.035);
+  box-shadow: 0 6px 18px rgba(255,183,221,0.19), 0 4px 14px rgba(0,0,0,0.10);
+}
+
+.clickable-box:active {
+  filter: brightness(0.95) saturate(1.08);
+  transform: translateY(2px) scale(0.97);
+  box-shadow: 0 1px 2px rgba(255,183,221,0.10), 0 1px 3px rgba(0,0,0,0.09);
+}
+
+
+.site-footer {
+  width: 100%;
+  padding: 20px 16px 40px;
+  text-align: center;
+  font-family: 'Itim', cursive;
+  font-size: 14px;
+  color: #444;
+  opacity: 0.8;
+  box-sizing: border-box;
+  line-height: 1.6;
+}
+
+.site-footer .social-links a {
+  margin: 0 4px;
+  color: #8888cc;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.site-footer .social-links a:hover {
+  color: #5555aa;
+}
+
+.footer-content {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.countdown-timer {
+  text-align: center;
+  font-size: 1.05em;
+  margin-top: 1.5em;
+  padding: 0.6em 1em;
+  background: #fff6f9;
+  border-radius: 12px;
+  color: #cc5c87;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  display: inline-block;
+}
+
+.cute-timer {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  padding: 0.8em 1.2em;
+  color: #444;
+  font-size: 0.95em;
+  text-align: center;
+  margin-top: 1.2em;
+  box-shadow: 0 0 8px rgba(255, 200, 250, 0.3);
+  display: inline-block;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(6px);
+
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.center-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1em;
+}
+
+/* ======================================= */
+/* == สไตล์สำหรับกล่องแจ้งเตือนอัปเดต == */
+/* ======================================= */
+.update-notification-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.update-box {
+  background: #f6fbff;
+  border: 3px solid #8ec9ff;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  text-align: center;
+  font-family: 'Itim', cursive, sans-serif;
+  color: #261427;
+  max-width: 400px;
+  width: 100%;
+  max-height: 80vh; /* กำหนดความสูงสูงสุดเป็น 80% ของ viewport height */
+  overflow-y: auto; /* เพิ่ม scrollbar เมื่อเนื้อหาเกิน */
+  animation: pop-in 0.3s cubic-bezier(.25,1,.5,1);
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.update-box h2 {
+  margin-top: 0;
+  color: #215981;
+}
+
+.update-box p {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.update-notes {
+  text-align: left;
+  list-style: '💖 ';
+  padding-left: 20px;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: rgba(230, 245, 255, 0.5);
+  border-radius: 8px;
+  padding: 10px 15px 10px 30px;
+}
+
+#update-now-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.registration-window p {
+  margin-top: 1em;
+  margin-bottom: 1.5em;
+  font-size: 1.1em;
+  color: #555;
+}
+
+#username-input {
+  font-family: 'Itim', cursive, sans-serif;
+  width: 80%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #8ec9ff;
+  font-size: 1.1em;
+  text-align: center;
+}
+
+#username-input:focus {
+  outline: none;
+  border-color: #77bbfa;
+  box-shadow: 0 0 10px rgba(128, 168, 255, 0.5);
+}
+
+.registration-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 80%; 
+  margin: 15px auto 0; 
+  box-sizing: border-box; 
+  padding: 8px 12px;
+  background-color: rgba(255, 236, 179, 0.5);
+  border: 1px solid rgba(255, 209, 128, 0.8);
+  border-radius: 8px;
+}
+
+.notice-icon {
+  font-size: 1.1em;
+}
+
+.notice-text {
+  font-size: 0.9em;
+  color: #795548; /* สีข้อความโทนน้ำตาลเข้ม */
+}
+
+/* ======================================= */
+/* == สไตล์สำหรับกล่องโปรไฟล์ผู้เล่น == */
+/* ======================================= */
+
+.player-profile-box {
+  background: #f6fbff;;
+  border: 3px solid #8ec9ff;
+  border-radius: 20px;
+  padding: 15px 20px;
+  margin: 0 auto 30px auto; /* เพิ่มระยะห่างด้านล่าง 30px */
+  box-shadow: 0 4px 12px rgba(80,60,120,0.11);
+  backdrop-filter: blur(2px);
+  font-family: 'Itim', cursive, sans-serif;
+  text-align: center;
+}
+
+/* สไตล์สำหรับ Rank (ฉายา) */
+.player-rank-title {
+  font-size: 0.9em;
+  color: #261427;
+  margin-bottom: 4px;
+  /* เพิ่มบรรทัดนี้เพื่อสั่งไม่ให้ฟอนต์รวมตัวอักษร */
+  font-family: 'Itim', cursive, sans-serif;
+  font-variant-ligatures: none;
+}
+
+/* สไตล์สำหรับชื่อผู้ใช้ */
+.player-username {
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #261427;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed #afd8ff;
+  display: block;
+  font-family: 'Itim', cursive, sans-serif;
+}
+
+/* == สไตล์สำหรับหน้าคอลเลคชันและโมดอล == */
+/* ปุ่มในกล่องโปรไฟล์ */
+.collection-btn {
+  width: 90%;
+  display: block; 
+  margin: 15px auto 0 auto !important; 
+  background-color: #8ec9ff !important; 
+  color: #215981 !important; 
+  box-shadow: 0 4px 12px rgba(163, 140, 125, 0.3), 0 2px 8px rgba(0,0,0,0.15); 
+}
+
+/* ======================================= */
+/* == สไตล์สำหรับหน้าคอลเลคชันและโมดอล (ปรับแก้) == */
+/* ======================================= */
+
+/* ตารางแสดงการ์ด - ปรับให้แสดง 2 คอลัมน์ */
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* บังคับให้มี 2 คอลัมน์ */
+  gap: 20px; /* เพิ่มระยะห่างระหว่างการ์ด */
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  justify-items: center; /* จัดการ์ดให้อยู่กึ่งกลางในแต่ละ cell */
+  font-family: 'Itim', cursive, sans-serif;
+}
+
+.collection-card {
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  width: 100%; /* ทำให้การ์ดใช้พื้นที่ 100% ของ column */
+  max-width: 150px; /* จำกัดขนาดสูงสุดของการ์ดแต่ละใบ */
+  box-sizing: border-box; /* รวม padding/border ใน width */
+}
+
+.collection-card:hover {
+  transform: scale(1.08);
+  filter: brightness(1.1);
+}
+
+.collection-card img {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-top: 0;
+}
+
+.collection-card span {
+  font-size: 0.9em; 
+  color: #333;
+  margin-top: 5px;
+  display: block;
+  font-family: 'Itim', cursive, sans-serif !important; 
+}
+
+.empty-collection-text {
+  grid-column: 1 / -1; /* ทำให้ข้อความเต็มแถว */
+  text-align: center;
+  color: #888;
+  padding: 30px 0;
+}
+
+/* สไตล์สำหรับ Pagination Controls */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.pagination-controls button {
+  background-color: #8ec9ff; 
+  color: #215981; 
+  padding: 8px 18px; 
+  border-radius: 10px; 
+  border: none;
+  cursor: pointer;
+  font-size: 1.05em; 
+  font-weight: bold;
+  font-family: 'Itim', cursive, sans-serif !important;
+  box-shadow: 0 2px 8px rgba(142,201,255,0.2), 0 1px 4px rgba(0,0,0,0.08); 
+  transition: all 0.2s ease;
+}
+
+.pagination-controls button:hover {
+  filter: brightness(1.08) saturate(1.06); 
+  transform: translateY(-2px) scale(1.035); 
+  box-shadow: 0 6px 18px rgba(142,201,255,0.3), 0 4px 14px rgba(0,0,0,0.1); 
+}
+
+.pagination-controls button:active {
+  filter: brightness(0.95) saturate(1.08); 
+  transform: translateY(2px) scale(0.97); 
+  box-shadow: 0 1px 2px rgba(142,201,255,0.1), 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.pagination-controls button:disabled {
+  background-color: #cccccc; 
+  color: #888888; 
+  cursor: not-allowed;
+  filter: none;
+  transform: none;
+  box-shadow: none; 
+}
+
+.page-info {
+  font-size: 1.1em; 
+  color: #215981; 
+  font-family: 'Itim', cursive, sans-serif !important; 
+  font-weight: bold;
+}
+
+/* Modal แสดงรายละเอียดการ์ด */
+.modal-container {
+  position: fixed;
+  z-index: 10001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s;
+}
+
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  padding: 30px; /* เพิ่ม padding ให้มีระยะห่างมากขึ้น */
+  border-radius: 15px;
+  width: 80%;
+  max-width: 380px; /* ปรับลด max-width เล็กน้อยเพื่อความกระชับ */
+  max-height: 90vh;
+  overflow-y: auto;
+  text-align: center;
+  animation: slideUp 0.4s cubic-bezier(.25,1,.5,1);
+}
+
+.modal-content img {
+  width: 150px;
+  border-radius: 15px;
+}
+
+.modal-message {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #333;
+}
+
+.modal-advice-container {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.modal-advice {
+  font-size: 1em;
+  color: #555;
+  text-align: left;
+  line-height: 1.7;
+}
+
+.modal-close {
+  color: #aaa;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  color: black;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.exp-bar-container {
+  background-color: #d1e5f8; /* สีพื้นหลังของหลอด */
+  border-radius: 20px;
+  height: 22px;
+  margin-top: 12px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #b7d1e8;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.exp-bar-fill {
+  background: linear-gradient(to right, #8ee2ff, #62b0ff); /* สีของหลอด EXP */
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.5s ease-in-out; /* ทำให้หลอดขยับอย่างนุ่มนวล */
+}
+
+.exp-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.8em;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* เพิ่มเงาให้ตัวอักษรคมชัด */
+}
+
+.window p {
+  font-family: 'Itim', cursive, sans-serif !important; /* บังคับใช้ฟอนต์ Itim */
+  font-size: 1em; /* ขนาดฟอนต์ตามที่คุณต้องการ */
+  color: #261427; /* สีเดียวกับข้อความปกติใน window */
+  margin-bottom: 20px; /* เพิ่มระยะห่างด้านล่างเล็กน้อย (ถ้าคุณต้องการ) */
+}
+
+/* สไตล์สำหรับการ์ดที่ลอย */
+.flying-card {
+  position: absolute;
+  background-image: url('images/card-back.png');
+  background-size: cover;
+  background-position: center;
+  width: 100px;
+  height: 150px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  pointer-events: none;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  animation: card-fly 1.5s cubic-bezier(0.33, 1, 0.68, 1) forwards; /* เปลี่ยน ease-out เป็น cubic-bezier */
+}
+/* Animation สำหรับปุ่มเด้ง (ถ้ายังไม่เพิ่ม) */
+@keyframes button-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+.collection-btn.pop-effect {
+  animation: button-pop 0.4s ease-out;
+}
+
+/* Animation สำหรับการ์ดที่ลอยไป */
+@keyframes card-fly {
+  0% { opacity: 0; transform: translate(calc(var(--start-x) - 50%), calc(var(--start-y) - 50%)) scale(0.5) rotate(0deg); }
+  20% { opacity: 1; transform: translate(calc(var(--start-x) - 50%), calc(var(--start-y) - 50%)) scale(1) rotate(10deg); }
+  90% { opacity: 1; transform: translate(calc(var(--target-x) - 50%), calc(var(--target-y) - 50%)) scale(0.8) rotate(20deg); }
+  100% { opacity: 0; transform: translate(calc(var(--target-x) - 50%), calc(var(--target-y) - 50%)) scale(0.5) rotate(30deg); }
+}
+
+/* --- Animation สำหรับ Rank Up --- */
+@keyframes slideUpOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* คลาสที่ใช้สั่งให้ Animation ทำงาน */
+.rank-out {
+  animation: slideUpOut 0.5s forwards ease-in-out;
+}
+
+.rank-in {
+  animation: slideInDown 0.5s forwards ease-in-out;
+}
+
+/* เพิ่มให้ container จัดการการล้นของข้อความ */
+#player-rank-container {
+  position: relative;
+  height: 1.2em; /* กำหนดความสูงให้พอดีกับข้อความ 1 บรรทัด */
+  overflow: hidden;
+}
