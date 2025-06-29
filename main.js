@@ -1,3 +1,11 @@
+// -- Supabase Client Setup --
+const { createClient } = supabase; // <-- บรรทัดนี้ตอนนี้จะทำงานได้แล้ว เพราะเรา Import มาใน index.html
+const SUPABASE_URL = 'https://zrllfifabegzzoeelqpp.supabase.co'; // <-- ใส่ URL ของคุณ
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpybGxmaWZhYmVnenpvZWVscXBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExMTY3NDQsImV4cCI6MjA2NjY5Mjc0NH0.aEveB1EPedeV4_30CqKls0HiTGr2dGx85kSgxk-mr8s'; // <-- ใส่ Key ของคุณ
+
+// เราจะใช้ตัวแปร supabaseClient ในการทำงานทั้งหมด เพื่อไม่ให้สับสนกับตัวแปร supabase หลัก
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 // =======================================
 //   ระบบแจ้งเตือนอัปเดต
 // =======================================
@@ -73,10 +81,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 // -- Sound Preloads --
-const sfxPop = new Audio("sound/pop.MP3?v=56");
-const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=56");
-const sfxCollect = new Audio("sound/collect.MP3?v=56"); 
-const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=56"); 
+const sfxPop = new Audio("sound/pop.MP3?v=55");
+const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=55");
+const sfxCollect = new Audio("sound/collect.MP3?v=55"); 
+const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=55"); 
 
 // ============ Data: ไพ่ทั้งหมด =============
 const cards = [
@@ -496,7 +504,8 @@ function showCardPage() {
       <p id="card-advice" class="card-advice-text"></p> 
     </div>
     <div class="center-wrapper"><p id="countdown-timer" class="countdown-timer cute-timer" style="display:none;"></p></div>
-    <div class="button-group"><button id="btn-back">🔙 กลับ</button></div>
+    <div class="button-group"><button id="btn-back">🔙 กลับ</button>
+    <button id="btn-share">🔗 แชร์</button> </div>
   `;
 
     const flipCard = document.getElementById("flip-card");
@@ -572,6 +581,31 @@ function showCardPage() {
 
             playSlideTransition(() => showHome(isDailyRewardGrantedOnFlip)); 
         };
+        const shareButton = document.getElementById("btn-share");
+    if (shareButton) {
+        shareButton.onclick = () => {
+            sfxPop.play();
+
+            // ดึงข้อมูลการ์ดที่แสดงอยู่ ณ ปัจจุบันจาก localStorage
+            const cardToShare = JSON.parse(localStorage.getItem("dailyCard"));
+            if (!cardToShare) {
+                alert("ไม่พบข้อมูลการ์ดที่จะแชร์ครับ");
+                return;
+            }
+
+            // **** แก้ไข URL ตรงนี้ให้เป็น URL ของเว็บคุณ ****
+            const appUrl = 'https://my-familiars-v2.netlify.app'; 
+            
+            // สร้างข้อความที่จะแชร์
+            const shareText = `วันนี้ฉันได้ไพ่ "${cardToShare.name}" จาก My Familiars! คุณล่ะได้ไพ่อะไร?`;
+
+            // สร้าง URL สำหรับแชร์ของ Facebook
+            const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(appUrl)}&quote=${encodeURIComponent(shareText)}`;
+
+            // เปิดหน้าต่างแชร์ในขนาดที่เหมาะสม
+            window.open(facebookShareUrl, 'facebook-share-dialog', 'width=800,height=600');
+        };
+    }
     }, 30);
 }
 
