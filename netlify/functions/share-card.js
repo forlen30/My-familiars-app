@@ -58,36 +58,27 @@ const cards = [
 
 exports.handler = async function(event, context) {
   try {
-    // --- ส่วนการสืบสวน ---
-    const receivedName = event.queryStringParameters.name || "ไม่มีชื่อส่งมา";
-    const decodedName = decodeURIComponent(receivedName);
-    const card = cards.find(c => c.name.toLowerCase() === decodedName.toLowerCase());
-    const siteUrl = "https://my-familiars-v2.netlify.app";
-    const imageUrl = card ? `${siteUrl}/${card.image}` : "หาภาพไม่เจอ - ใช้ภาพเริ่มต้นแทน";
+    const cardName = decodeURIComponent(event.queryStringParameters.name || "Default");
+    const card = cards.find(c => c.name.toLowerCase() === cardName.toLowerCase());
+    
+    const siteUrl = "https://my-familiars-v2.netlify.app"; 
+    const pageTitle = card ? `${card.name} | My Familiars` : "My Familiars";
+    const pageDescription = card ? card.message : "สุ่มไพ่พยากรณ์ประจำวันของคุณ";
+    const imageUrl = card ? `${siteUrl}/${card.image}` : `${siteUrl}/images/icon-512.png`;
 
-    // --- สร้างรายงาน ---
-    const report = `
-========================================
-       Share Function Debug Report
-========================================
-1. ชื่อการ์ดที่ได้รับมา (ดิบ): ${receivedName}
-2. ชื่อการ์ดหลังถอดรหัส: ${decodedName}
-3. ผลการค้นหาการ์ด: ${card ? `เจอ (${card.name})` : "ไม่เจอ"}
-4. ที่อยู่ของรูปภาพที่สร้างขึ้น: ${imageUrl}
-========================================
-    `;
+    const html = `
+      <!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>${pageTitle}</title><meta name="description" content="${pageDescription}"><meta property="og:title" content="${pageTitle}"><meta property="og:description" content="${pageDescription}"><meta property="og:image" content="${imageUrl}"><meta property="og:url" content="${siteUrl}/card/${encodeURIComponent(cardName)}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><script>window.location.href = '${siteUrl}';</script></head><body>Redirecting...</body></html>`;
 
-    // ส่งรายงานกลับไปเป็นข้อความธรรมดา
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-      body: report,
+      headers: { 'Content-Type': 'text/html' },
+      body: html,
     };
-
   } catch (error) {
+    console.error("Error in share function:", error);
     return {
       statusCode: 500,
-      body: `!!! เกิดข้อผิดพลาดร้ายแรง !!!\n${error.toString()}`
+      body: `Error: ${error.message}`
     };
   }
 };
