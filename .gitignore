@@ -1,0 +1,6 @@
+# โฟลเดอร์ที่เก็บแพ็กเกจทั้งหมด (สร้างโดย npm)
+node_modules/
+
+# ไฟล์ตั้งค่าของ VS Code
+.vscode/
+*.code-workspace
