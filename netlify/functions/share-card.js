@@ -61,7 +61,7 @@ exports.handler = async function(event, context) {
   console.log("--- Share function triggered! ---");
 
   try {
-    const cardName = event.queryStringParameters.name || "Default";
+    const cardName = decodeURIComponent(event.queryStringParameters.name || "Default");
     // ===== เครื่องดักฟังจุดที่ 2: ได้รับชื่อการ์ดอะไรมา? =====
     console.log(`Received card name: "${cardName}"`);
 

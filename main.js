@@ -592,7 +592,7 @@ if (shareButton) {
         const appUrl = 'https://my-familiars-v2.netlify.app'; 
         
         // สร้าง URL สำหรับแชร์ที่มีชื่อการ์ดต่อท้าย
-        const cardShareUrl = `${appUrl}/card/${cardToShare.name}`;
+        const cardShareUrl = `${appUrl}/card/${encodeURIComponent(cardToShare.name)}`;
         const shareText = `วันนี้ฉันได้ไพ่ "${cardToShare.name}" จาก My Familiars!`;
 
         // ใช้ Web Share API เหมือนเดิม แต่ส่ง URL ใหม่เข้าไป
