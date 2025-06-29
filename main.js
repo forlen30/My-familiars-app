@@ -582,30 +582,38 @@ function showCardPage() {
             playSlideTransition(() => showHome(isDailyRewardGrantedOnFlip)); 
         };
         const shareButton = document.getElementById("btn-share");
-    if (shareButton) {
-        shareButton.onclick = () => {
-            sfxPop.play();
+if (shareButton) {
+    shareButton.onclick = () => {
+        sfxPop.play();
 
-            // ดึงข้อมูลการ์ดที่แสดงอยู่ ณ ปัจจุบันจาก localStorage
-            const cardToShare = JSON.parse(localStorage.getItem("dailyCard"));
-            if (!cardToShare) {
-                alert("ไม่พบข้อมูลการ์ดที่จะแชร์ครับ");
-                return;
-            }
+        const cardToShare = JSON.parse(localStorage.getItem("dailyCard"));
+        if (!cardToShare) {
+            return alert("ไม่พบข้อมูลการ์ดที่จะแชร์ครับ");
+        }
 
-            // **** แก้ไข URL ตรงนี้ให้เป็น URL ของเว็บคุณ ****
-            const appUrl = 'https://my-familiars-v2.netlify.app'; 
-            
-            // สร้างข้อความที่จะแชร์
-            const shareText = `วันนี้ฉันได้ไพ่ "${cardToShare.name}" จาก My Familiars! คุณล่ะได้ไพ่อะไร?`;
+        const appUrl = 'https://my-familiars-v2.netlify.app'; // URL เว็บของคุณ
+        const shareText = `วันนี้ฉันได้ไพ่ "${cardToShare.name}" จาก My Familiars! คุณล่ะได้ไพ่อะไร?`;
 
-            // สร้าง URL สำหรับแชร์ของ Facebook
+        // ตรวจสอบว่าเบราว์เซอร์รองรับ Web Share API หรือไม่
+        if (navigator.share) {
+            // --- ถ้าเป็นมือถือที่รองรับ (วิธีที่ดีที่สุด) ---
+            navigator.share({
+                title: 'ไพ่ประจำวันของฉัน - My Familiars',
+                text: shareText,
+                url: appUrl
+            }).then(() => {
+                console.log('แชร์สำเร็จ!');
+            }).catch((error) => {
+                console.error('เกิดข้อผิดพลาดในการแชร์:', error);
+            });
+        } else {
+            // --- ถ้าเป็นคอมพิวเตอร์ หรือเบราว์เซอร์ที่ไม่รองรับ (ใช้วิธีเดิมเป็นทางเลือกสำรอง) ---
+            console.log("Web Share API not supported, falling back to Facebook sharer.");
             const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(appUrl)}&quote=${encodeURIComponent(shareText)}`;
-
-            // เปิดหน้าต่างแชร์ในขนาดที่เหมาะสม
             window.open(facebookShareUrl, 'facebook-share-dialog', 'width=800,height=600');
-        };
-    }
+        }
+    };
+}
     }, 30);
 }
 
