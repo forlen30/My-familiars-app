@@ -81,10 +81,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 // -- Sound Preloads --
-const sfxPop = new Audio("sound/pop.MP3?v=55");
-const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=55");
-const sfxCollect = new Audio("sound/collect.MP3?v=55"); 
-const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=55"); 
+const sfxPop = new Audio("sound/pop.MP3?v=57");
+const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=57");
+const sfxCollect = new Audio("sound/collect.MP3?v=57"); 
+const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=57"); 
 
 // ============ Data: ไพ่ทั้งหมด =============
 const cards = [
@@ -581,35 +581,29 @@ function showCardPage() {
 
             playSlideTransition(() => showHome(isDailyRewardGrantedOnFlip)); 
         };
-        const shareButton = document.getElementById("btn-share");
+        const shareButton = document.getElementById("btn-share-facebook");
 if (shareButton) {
     shareButton.onclick = () => {
         sfxPop.play();
-
         const cardToShare = JSON.parse(localStorage.getItem("dailyCard"));
-        if (!cardToShare) {
-            return alert("ไม่พบข้อมูลการ์ดที่จะแชร์ครับ");
-        }
+        if (!cardToShare) return alert("ไม่พบข้อมูลการ์ดที่จะแชร์ครับ");
 
-        const appUrl = 'https://my-familiars-v2.netlify.app'; // URL เว็บของคุณ
-        const shareText = `วันนี้ฉันได้ไพ่ "${cardToShare.name}" จาก My Familiars! คุณล่ะได้ไพ่อะไร?`;
+        // **** แก้ไข URL ตรงนี้ให้เป็น URL ของเว็บ V2 คุณ ****
+        const appUrl = 'https://my-familiars-v2.netlify.app'; 
+        
+        // สร้าง URL สำหรับแชร์ที่มีชื่อการ์ดต่อท้าย
+        const cardShareUrl = `${appUrl}/card/${cardToShare.name}`;
+        const shareText = `วันนี้ฉันได้ไพ่ "${cardToShare.name}" จาก My Familiars!`;
 
-        // ตรวจสอบว่าเบราว์เซอร์รองรับ Web Share API หรือไม่
+        // ใช้ Web Share API เหมือนเดิม แต่ส่ง URL ใหม่เข้าไป
         if (navigator.share) {
-            // --- ถ้าเป็นมือถือที่รองรับ (วิธีที่ดีที่สุด) ---
             navigator.share({
                 title: 'ไพ่ประจำวันของฉัน - My Familiars',
                 text: shareText,
-                url: appUrl
-            }).then(() => {
-                console.log('แชร์สำเร็จ!');
-            }).catch((error) => {
-                console.error('เกิดข้อผิดพลาดในการแชร์:', error);
+                url: cardShareUrl // <-- ใช้ URL ใหม่
             });
         } else {
-            // --- ถ้าเป็นคอมพิวเตอร์ หรือเบราว์เซอร์ที่ไม่รองรับ (ใช้วิธีเดิมเป็นทางเลือกสำรอง) ---
-            console.log("Web Share API not supported, falling back to Facebook sharer.");
-            const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(appUrl)}&quote=${encodeURIComponent(shareText)}`;
+            const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cardShareUrl)}`;
             window.open(facebookShareUrl, 'facebook-share-dialog', 'width=800,height=600');
         }
     };
