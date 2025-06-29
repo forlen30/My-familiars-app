@@ -60,14 +60,29 @@ exports.handler = async function(event, context) {
   try {
     const cardName = decodeURIComponent(event.queryStringParameters.name || "Default");
     const card = cards.find(c => c.name.toLowerCase() === cardName.toLowerCase());
-    
     const siteUrl = "https://my-familiars-v2.netlify.app"; 
     const pageTitle = card ? `${card.name} | My Familiars` : "My Familiars";
     const pageDescription = card ? card.message : "สุ่มไพ่พยากรณ์ประจำวันของคุณ";
     const imageUrl = card ? `${siteUrl}/${card.image}` : `${siteUrl}/images/icon-512.png`;
 
     const html = `
-      <!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>${pageTitle}</title><meta name="description" content="${pageDescription}"><meta property="og:title" content="${pageTitle}"><meta property="og:description" content="${pageDescription}"><meta property="og:image" content="${imageUrl}"><meta property="og:url" content="${siteUrl}/card/${encodeURIComponent(cardName)}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><script>window.location.href = '${siteUrl}';</script></head><body>Redirecting...</body></html>`;
+      <!DOCTYPE html>
+      <html lang="th">
+      <head>
+        <meta charset="UTF-8">
+        <title>${pageTitle}</title>
+        <meta name="description" content="${pageDescription}">
+        <meta property="og:title" content="${pageTitle}">
+        <meta property="og:description" content="${pageDescription}">
+        <meta property="og:image" content="${imageUrl}">
+        <meta property="og:url" content="${siteUrl}/card/${encodeURIComponent(cardName)}">
+        <meta property="og:type" content="website">
+        <meta name="twitter:card" content="summary_large_image">
+        <script>window.location.href = '${siteUrl}';</script>
+      </head>
+      <body>Redirecting...</body>
+      </html>
+    `;
 
     return {
       statusCode: 200,
@@ -75,10 +90,9 @@ exports.handler = async function(event, context) {
       body: html,
     };
   } catch (error) {
-    console.error("Error in share function:", error);
     return {
       statusCode: 500,
-      body: `Error: ${error.message}`
+      body: "error"
     };
   }
 };
