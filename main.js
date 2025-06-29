@@ -4,7 +4,7 @@ const SUPABASE_URL = 'https://zrllfifabegzzoeelqpp.supabase.co'; // <-- ใส�
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpybGxmaWZhYmVnenpvZWVscXBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExMTY3NDQsImV4cCI6MjA2NjY5Mjc0NH0.aEveB1EPedeV4_30CqKls0HiTGr2dGx85kSgxk-mr8s'; // <-- ใส่ Key ของคุณ
 
 // เราจะใช้ตัวแปร supabaseClient ในการทำงานทั้งหมด เพื่อไม่ให้สับสนกับตัวแปร supabase หลัก
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // =======================================
 //   ระบบแจ้งเตือนอัปเดต
@@ -505,7 +505,7 @@ function showCardPage() {
     </div>
     <div class="center-wrapper"><p id="countdown-timer" class="countdown-timer cute-timer" style="display:none;"></p></div>
     <div class="button-group"><button id="btn-back">🔙 กลับ</button>
-    <button id="btn-share">🔗 แชร์</button> </div>
+    <button id="btn-share-facebook">🔗 แชร์</button> </div>
   `;
 
     const flipCard = document.getElementById("flip-card");
@@ -581,33 +581,32 @@ function showCardPage() {
 
             playSlideTransition(() => showHome(isDailyRewardGrantedOnFlip)); 
         };
-        const shareButton = document.getElementById("btn-share");
-if (shareButton) {
-    shareButton.onclick = () => {
-        sfxPop.play();
-        const cardToShare = JSON.parse(localStorage.getItem("dailyCard"));
-        if (!cardToShare) return alert("ไม่พบข้อมูลการ์ดที่จะแชร์ครับ");
+        const shareButton = document.getElementById("btn-share-facebook");
+ if (shareButton) {
+        shareButton.onclick = () => {
+            sfxPop.play();
 
-        // **** แก้ไข URL ตรงนี้ให้เป็น URL ของเว็บ V2 คุณ ****
-        const appUrl = 'https://my-familiars-v2.netlify.app'; 
-        
-        // สร้าง URL สำหรับแชร์ที่มีชื่อการ์ดต่อท้าย
-        const cardShareUrl = `${appUrl}/card/${cardToShare.name}`;
-        const shareText = `วันนี้ฉันได้ไพ่ "${cardToShare.name}" จาก My Familiars!`;
+            const cardToShare = JSON.parse(localStorage.getItem("dailyCard"));
+            if (!cardToShare) {
+                return alert("ไม่พบข้อมูลการ์ดที่จะแชร์ครับ");
+            }
 
-        // ใช้ Web Share API เหมือนเดิม แต่ส่ง URL ใหม่เข้าไป
-        if (navigator.share) {
-            navigator.share({
-                title: 'ไพ่ประจำวันของฉัน - My Familiars',
-                text: shareText,
-                url: cardShareUrl // <-- ใช้ URL ใหม่
-            });
-        } else {
-            const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cardShareUrl)}`;
-            window.open(facebookShareUrl, 'facebook-share-dialog', 'width=800,height=600');
-        }
-    };
-}
+            const appUrl = 'https://my-familiars-v2.netlify.app'; // URL เว็บ V2 ของคุณ
+            const cardShareUrl = `${appUrl}/card/${cardToShare.name}`;
+            const shareText = `วันนี้ฉันได้ไพ่ "${cardToShare.name}" จาก My Familiars!`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'ไพ่ประจำวันของฉัน - My Familiars',
+                    text: shareText,
+                    url: cardShareUrl
+                });
+            } else {
+                const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cardShareUrl)}`;
+                window.open(facebookShareUrl, 'facebook-share-dialog', 'width=800,height=600');
+            }
+        };
+    }
     }, 30);
 }
 
