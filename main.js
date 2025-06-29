@@ -517,8 +517,7 @@ function showCardPage() {
     const day = String(now.getDate()).padStart(2, '0');
     const todayForExp = `${year}-${month}-${day}`;
 
-    const playerData = loadPlayerData();
-
+    let playerData = loadPlayerData();
     let isDailyRewardGrantedOnFlip = false; 
 
     const handleCardFlip = () => { 
@@ -603,7 +602,7 @@ if (shareButton) {
                 url: cardShareUrl // <-- ใช้ URL ใหม่
             });
         } else {
-            const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cardShareUrl)}`;
+            const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cardShareUrl)}&quote=${encodeURIComponent(shareText)}`;
             window.open(facebookShareUrl, 'facebook-share-dialog', 'width=800,height=600');
         }
     };

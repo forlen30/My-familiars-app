@@ -1,6 +1,6 @@
-// ไฟล์: netlify/functions/share-card.js
+// ไฟล์: netlify/functions/share-card.js (เวอร์ชันสมบูรณ์)
 
-// เราต้องเอาข้อมูลการ์ดทั้งหมดมาไว้ในนี้ด้วย
+// [แก้ไข] เพิ่มข้อมูลการ์ดทั้งหมดเข้ามาในไฟล์นี้โดยตรง
 const cards = [
   { name: "Capybara", image: "images/Capybara.png", message: "ผ่อนคลาย พักผ่อน หยุดอยู่กับที่" },
   { name: "Alicorn", image: "images/Alicorn.png", message: "พลังศักดิ์สิทธิ์ การเยียวยา ความบริสุทธ์" },
@@ -57,62 +57,28 @@ const cards = [
 ];
 
 exports.handler = async function(event, context) {
-  // ===== เครื่องดักฟังจุดที่ 1: ฟังก์ชันเริ่มทำงานหรือยัง? =====
-  console.log("--- Share function triggered! ---");
-
   try {
     const cardName = decodeURIComponent(event.queryStringParameters.name || "Default");
-    // ===== เครื่องดักฟังจุดที่ 2: ได้รับชื่อการ์ดอะไรมา? =====
-    console.log(`Received card name: "${cardName}"`);
-
     const card = cards.find(c => c.name.toLowerCase() === cardName.toLowerCase());
     
-    // ===== เครื่องดักฟังจุดที่ 3: หาการ์ดเจอหรือไม่? =====
-    if (card) {
-      console.log(`Card found: ${card.name}`);
-    } else {
-      console.log(`Card NOT FOUND: "${cardName}"`);
-    }
-
-    const siteUrl = "https://my-familiars-v2.netlify.app";
+    const siteUrl = "https://my-familiars-v2.netlify.app"; 
     const pageTitle = card ? `${card.name} | My Familiars` : "My Familiars";
     const pageDescription = card ? card.message : "สุ่มไพ่พยากรณ์ประจำวันของคุณ";
     const imageUrl = card ? `${siteUrl}/${card.image}` : `${siteUrl}/images/icon-512.png`;
 
-    // ===== เครื่องดักฟังจุดที่ 4: สร้าง URL รูปภาพว่าอะไร? =====
-    console.log(`Generated image URL: ${imageUrl}`);
-    console.log("--- Generating HTML... ---");
-
     const html = `
-      <!DOCTYPE html>
-      <html lang="th">
-      <head>
-        <meta charset="UTF-8">
-        <title>${pageTitle}</title>
-        <meta property="og:title" content="${pageTitle}">
-        <meta property="og:description" content="${pageDescription}">
-        <meta property="og:image" content="${imageUrl}">
-        <meta property="og:url" content="${siteUrl}/card/${cardName}">
-        <script>
-          window.location.href = '${siteUrl}';
-        </script>
-      </head>
-      <body>Redirecting...</body>
-      </html>
-    `;
+      <!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><title>${pageTitle}</title><meta name="description" content="${pageDescription}"><meta property="og:title" content="${pageTitle}"><meta property="og:description" content="${pageDescription}"><meta property="og:image" content="${imageUrl}"><meta property="og:url" content="${siteUrl}/card/${encodeURIComponent(cardName)}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image"><script>window.location.href = '${siteUrl}';</script></head><body>Redirecting...</body></html>`;
 
-    console.log("--- HTML generation complete. Sending response. ---");
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'text/html' },
       body: html,
     };
   } catch (error) {
-    // ===== เครื่องดักฟังจุดที่ 5: เกิดข้อผิดพลาดอะไร? =====
-    console.error("!!! CRITICAL ERROR in share function !!!", error);
+    console.error("Error in share function:", error);
     return {
       statusCode: 500,
-      body: `An error occurred: ${error.message}`
+      body: `Error: ${error.message}`
     };
   }
 };
