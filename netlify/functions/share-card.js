@@ -57,46 +57,62 @@ const cards = [
 ];
 
 exports.handler = async function(event, context) {
-  // ดึงชื่อการ์ดจาก URL, เช่น /card/Lion -> cardName = "Lion"
-  const cardName = event.queryStringParameters.name || "Default";
+  // ===== เครื่องดักฟังจุดที่ 1: ฟังก์ชันเริ่มทำงานหรือยัง? =====
+  console.log("--- Share function triggered! ---");
 
-  // หาข้อมูลการ์ดใบนั้น
-  const card = cards.find(c => c.name.toLowerCase() === cardName.toLowerCase());
+  try {
+    const cardName = event.queryStringParameters.name || "Default";
+    // ===== เครื่องดักฟังจุดที่ 2: ได้รับชื่อการ์ดอะไรมา? =====
+    console.log(`Received card name: "${cardName}"`);
 
-  // ถ้าหาไม่เจอ ให้ใช้ข้อมูลเริ่มต้น
-  const siteUrl = "https://my-familiars-v2.netlify.app"; // แก้เป็น URL เว็บ V2 ของคุณ
-  const pageTitle = card ? `${card.name} | My Familiars` : "My Familiars";
-  const pageDescription = card ? card.message : "สุ่มไพ่พยากรณ์ประจำวันของคุณ";
-  const imageUrl = card ? `${siteUrl}/${card.image}` : `${siteUrl}/images/icon-512.png`
+    const card = cards.find(c => c.name.toLowerCase() === cardName.toLowerCase());
+    
+    // ===== เครื่องดักฟังจุดที่ 3: หาการ์ดเจอหรือไม่? =====
+    if (card) {
+      console.log(`Card found: ${card.name}`);
+    } else {
+      console.log(`Card NOT FOUND: "${cardName}"`);
+    }
 
-  // สร้างโค้ด HTML ที่มี Meta Tags สำหรับ Facebook
-  const html = `
-    <!DOCTYPE html>
-    <html lang="th">
-    <head>
-      <meta charset="UTF-8">
-      <title>${pageTitle}</title>
-      <meta name="description" content="${pageDescription}">
-      <meta property="og:title" content="${pageTitle}">
-      <meta property="og:description" content="${pageDescription}">
-      <meta property="og:image" content="${imageUrl}">
-      <meta property="og:url" content="${siteUrl}/card/${cardName}">
-      <meta property="og:type" content="website">
-      <meta name="twitter:card" content="summary_large_image">
+    const siteUrl = "https://my-familiars-v2.netlify.app";
+    const pageTitle = card ? `${card.name} | My Familiars` : "My Familiars";
+    const pageDescription = card ? card.message : "สุ่มไพ่พยากรณ์ประจำวันของคุณ";
+    const imageUrl = card ? `${siteUrl}/${card.image}` : `${siteUrl}/images/icon-512.png`;
 
-      <script>
-        window.location.href = '${siteUrl}';
-      </script>
-    </head>
-    <body>
-      <p>กำลังพาคุณไปยัง My Familiars...</p>
-    </body>
-    </html>
-  `;
+    // ===== เครื่องดักฟังจุดที่ 4: สร้าง URL รูปภาพว่าอะไร? =====
+    console.log(`Generated image URL: ${imageUrl}`);
+    console.log("--- Generating HTML... ---");
 
-  return {
-    statusCode: 200,
-    headers: { 'Content-Type': 'text/html' },
-    body: html,
-  };
+    const html = `
+      <!DOCTYPE html>
+      <html lang="th">
+      <head>
+        <meta charset="UTF-8">
+        <title>${pageTitle}</title>
+        <meta property="og:title" content="${pageTitle}">
+        <meta property="og:description" content="${pageDescription}">
+        <meta property="og:image" content="${imageUrl}">
+        <meta property="og:url" content="${siteUrl}/card/${cardName}">
+        <script>
+          window.location.href = '${siteUrl}';
+        </script>
+      </head>
+      <body>Redirecting...</body>
+      </html>
+    `;
+
+    console.log("--- HTML generation complete. Sending response. ---");
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'text/html' },
+      body: html,
+    };
+  } catch (error) {
+    // ===== เครื่องดักฟังจุดที่ 5: เกิดข้อผิดพลาดอะไร? =====
+    console.error("!!! CRITICAL ERROR in share function !!!", error);
+    return {
+      statusCode: 500,
+      body: `An error occurred: ${error.message}`
+    };
+  }
 };
