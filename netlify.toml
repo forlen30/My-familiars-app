@@ -1,7 +1,14 @@
-[functions]
-  directory = "netlify/functions"
+[build]
+  command = "echo 'Building site...'"
+  functions = "netlify/functions"
+  publish = "."
 
 [[redirects]]
-from = "/card/:name"
-to = "/.netlify/functions/share-card?name=:name"
-status = 200
+  from = "/card/:name"
+  to = "/.netlify/functions/share-card?name=:name"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

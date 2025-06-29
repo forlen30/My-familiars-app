@@ -67,7 +67,7 @@ exports.handler = async function(event, context) {
   const siteUrl = "https://my-familiars-v2.netlify.app"; // แก้เป็น URL เว็บ V2 ของคุณ
   const pageTitle = card ? `${card.name} | My Familiars` : "My Familiars";
   const pageDescription = card ? card.message : "สุ่มไพ่พยากรณ์ประจำวันของคุณ";
-  const imageUrl = card ? `${siteUrl}/${card.image}` : `${siteUrl}/images/icon-512.png`;
+  const imageUrl = card ? `${siteUrl}/${card.image}` : `${siteUrl}/images/icon-512.png`
 
   // สร้างโค้ด HTML ที่มี Meta Tags สำหรับ Facebook
   const html = `

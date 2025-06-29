@@ -581,7 +581,7 @@ function showCardPage() {
 
             playSlideTransition(() => showHome(isDailyRewardGrantedOnFlip)); 
         };
-        const shareButton = document.getElementById("btn-share-facebook");
+        const shareButton = document.getElementById("btn-share");
 if (shareButton) {
     shareButton.onclick = () => {
         sfxPop.play();
