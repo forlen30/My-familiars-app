@@ -79,6 +79,7 @@ const ASSETS = [
   '/images/cursor.png',
   '/images/egg.png',
   '/images/snake-share.png',
+  '/images/snake-512.png',
   'https://fonts.googleapis.com/css2?family=Itim&display=swap'
 ];
 
