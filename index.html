@@ -30,17 +30,25 @@
   gtag('config', 'G-27H58MHT85');
   </script>
 
-   <!-- โค้ด OneSignal START -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-        appId: "68a7a06b-4814-4d41-987a-f14c5631c5d5",
-      });
+   <!-- OneSignal START -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "68a7a06b-4814-4d41-987a-f14c5631c5d5",
+      serviceWorker: {
+        // สำคัญมาก! ต้องตั้ง path ให้ตรงกับไฟล์ที่ deploy ไว้
+        workerPath: "OneSignalSDKWorker.js",
+        updaterWorkerPath: "OneSignalSDKUpdaterWorker.js", // ถ้าไม่มีไม่ต้องใส่
+        useExistingWorker: true
+      },
+      notifyButton: {
+        enable: true // เปิดปุ่ม subscribe Noti
+      }
     });
-  </script>
-  <!-- โค้ด OneSignal END -->
+  });
+</script>
 </head>
 
 <body oncontextmenu="return false;">
