@@ -1,5 +1,7 @@
 const CACHE_NAME = 'My-Familiars-v59'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
 
+importScripts('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.worker.js');
+
 const ASSETS = [
   '/',
   '/index.html',
@@ -81,6 +83,7 @@ const ASSETS = [
   '/images/snake-share.png',
   'https://fonts.googleapis.com/css2?family=Itim&display=swap'
 ];
+
 
 // ติดตั้ง SW และ cache ไฟล์ทั้งหมด
 self.addEventListener('install', event => {
