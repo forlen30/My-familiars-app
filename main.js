@@ -81,10 +81,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 // -- Sound Preloads --
-const sfxPop = new Audio("sound/pop.MP3?v=60");
-const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=60");
-const sfxCollect = new Audio("sound/collect.MP3?v=60"); 
-const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=60"); 
+const sfxPop = new Audio("sound/pop.MP3?v=61");
+const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=61");
+const sfxCollect = new Audio("sound/collect.MP3?v=61"); 
+const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=61"); 
 
 // ============ Data: ไพ่ทั้งหมด =============
 const cards = [
@@ -319,7 +319,6 @@ function showHome(triggerCollectionAnimation = false) {
         <span class="exp-text">EXP: ${expProgress.current} / ${expProgress.required}</span>
       </div>
       <button id="collection-button" class="button collection-btn">📖 กรีมัวร์ของฉัน</button>
-      <button id="settings-button" class="settings-btn">⚙️</button>
     </div>
     <div class="window menu-box">
       <h1>นุ่มฟู ออราเคิล</h1>
@@ -366,15 +365,6 @@ function showHome(triggerCollectionAnimation = false) {
         
         const collectionButton = document.getElementById("collection-button");
         collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionPage); };
-
-        // ===== [ วางโค้ดของคุณตรงนี้ ] =====
-const settingsButton = document.getElementById("settings-button");
-if (settingsButton) {
-    settingsButton.onclick = () => {
-        sfxPop.play();
-        playSlideTransition(showSettingsPage);
-    };
-}
 
         if (triggerCollectionAnimation) {
             setTimeout(() => {
@@ -459,36 +449,6 @@ if (settingsButton) {
             }, 800);
         }
     }, 50);
-}
-
-function showSettingsPage() {
-    trackPageView('/settings', 'Settings Page');
-    const root = document.getElementById("spa-root");
-    root.innerHTML = `
-    <div class="window">
-      <h1>ตั้งค่า</h1>
-      <div style="margin-top: 20px; text-align: center;">
-          <p style="font-size: 1em; margin-bottom: 20px;">กดปุ่มด้านล่างเพื่อเปิด/ปิดการรับการแจ้งเตือนข่าวสารและอัปเดตต่างๆ</p>
-          <button id="subscribe-notifications" class="button" style="background-color: #3498db;">รับการแจ้งเตือน</button>
-      </div>
-    </div>
-    <div class="button-group">
-      <button id="btn-back">🔙 กลับ</button>
-    </div>
-  `;
-
-  setTimeout(() => {
-    document.getElementById("btn-back").onclick = () => { sfxPop.play(); playSlideTransition(initializeApp); };
-
-    // ทำให้ปุ่มรับการแจ้งเตือนทำงาน
-    document.getElementById("subscribe-notifications").onclick = () => {
-        sfxPop.play();
-        // คำสั่งนี้จะแสดง Pop-up ขออนุญาตของ OneSignal ขึ้นมา
-        OneSignal.push(() => {
-            OneSignal.showSlidedownPrompt();
-        });
-    };
-  }, 50);
 }
 
 // ========== CARD PAGE ==========

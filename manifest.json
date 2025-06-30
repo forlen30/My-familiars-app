@@ -1,7 +1,7 @@
 {
   "name": "My Familiars",
   "short_name": "My Familiars",
-  "start_url": "/index.html?v=57", 
+  "start_url": "/index.html?v=61", 
   "display": "standalone",
   "background_color": "#8ec9ff",
   "theme_color": "#8ec9ff",
