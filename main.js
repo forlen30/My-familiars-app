@@ -462,45 +462,44 @@ function showSettingPage() {
   root.innerHTML = `
     <div class="window">
       <h1>ตั้งค่า</h1>
+      <span id="push-status">กำลังโหลด...</span>
       <label class="switch">
-        <input type="checkbox" id="toggle-notification" disabled>
+        <input type="checkbox" id="toggle-notification">
         <span class="slider"></span>
       </label>
       <span>รับการแจ้งเตือน</span>
       <div class="button-group">
         <button id="btn-back">🔙 กลับ</button>
       </div>
+      
     </div>
   `;
 
-  setTimeout(() => {
-    const toggle = document.getElementById('toggle-notification');
-    toggle.disabled = true; // กัน user กดขณะกำลังโหลด
+  document.getElementById("btn-back").onclick = () => {
+    playSlideTransition(showHome);
+  };
 
-    OneSignal.push(function() {
-      OneSignal.isPushNotificationsEnabled().then(function(enabled) {
-        toggle.checked = enabled;
-        toggle.disabled = false; // ได้สถานะแล้วค่อยเปิดให้กด
-      });
-    });
+  // --- ย้าย logic OneSignal มาไว้ที่นี่ ---
+const status = document.getElementById('push-status');
+const toggle = document.getElementById('toggle-notification');
+toggle.disabled = true;
+status.textContent = "กำลังโหลด...";
 
-    toggle.onchange = function() {
-      toggle.disabled = true; // กัน user กดรัว ๆ ระหว่าง subscribe/unsubscribe
-      if (toggle.checked) {
-        OneSignal.push(function() { 
-          OneSignal.subscribe().finally(() => toggle.disabled = false);
-        });
-      } else {
-        OneSignal.push(function() { 
-          OneSignal.unsubscribe().finally(() => toggle.disabled = false);
-        });
-      }
-    };
-
-    document.getElementById("btn-back").onclick = () => {
-      playSlideTransition(showHome);
-    };
-  }, 20);
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(function(OneSignal) {
+  OneSignal.isPushNotificationsEnabled().then(function(enabled) {
+    toggle.checked = enabled;
+    toggle.disabled = false;
+    status.textContent = ""; // ลบข้อความ
+  });
+  toggle.onchange = function() {
+    if (toggle.checked) {
+      OneSignal.subscribe();
+    } else {
+      OneSignal.unsubscribe();
+    }
+  };
+});
 }
 
 // ========== CARD PAGE ==========
