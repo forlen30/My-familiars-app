@@ -463,7 +463,7 @@ function showSettingPage() {
     <div class="window">
       <h1>ตั้งค่า</h1>
       <label class="switch">
-        <input type="checkbox" id="toggle-notification">
+        <input type="checkbox" id="toggle-notification" disabled>
         <span class="slider"></span>
       </label>
       <span>รับการแจ้งเตือน</span>
@@ -473,26 +473,34 @@ function showSettingPage() {
     </div>
   `;
 
-  document.getElementById("btn-back").onclick = () => {
-    playSlideTransition(showHome);
-  };
-
-  // --- ย้าย logic OneSignal มาไว้ที่นี่ ---
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(function(OneSignal) {
+  setTimeout(() => {
     const toggle = document.getElementById('toggle-notification');
-    OneSignal.isPushNotificationsEnabled().then(function(enabled) {
-      toggle.checked = enabled;
+    toggle.disabled = true; // กัน user กดขณะกำลังโหลด
+
+    OneSignal.push(function() {
+      OneSignal.isPushNotificationsEnabled().then(function(enabled) {
+        toggle.checked = enabled;
+        toggle.disabled = false; // ได้สถานะแล้วค่อยเปิดให้กด
+      });
     });
 
     toggle.onchange = function() {
+      toggle.disabled = true; // กัน user กดรัว ๆ ระหว่าง subscribe/unsubscribe
       if (toggle.checked) {
-        OneSignal.subscribe();
+        OneSignal.push(function() { 
+          OneSignal.subscribe().finally(() => toggle.disabled = false);
+        });
       } else {
-        OneSignal.unsubscribe();
+        OneSignal.push(function() { 
+          OneSignal.unsubscribe().finally(() => toggle.disabled = false);
+        });
       }
     };
-  });
+
+    document.getElementById("btn-back").onclick = () => {
+      playSlideTransition(showHome);
+    };
+  }, 20);
 }
 
 // ========== CARD PAGE ==========
