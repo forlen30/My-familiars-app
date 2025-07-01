@@ -669,6 +669,7 @@ function showSupporterPage() {
         <li>🌟 Aranya Lindroos</li>
         <li>🌟 คุณ พัชราภรณ์</li>
         <li>🌟 Thanattha</li>
+        <li>🌟 คุณ ธนัญรัตน์</li>
       </ul>
     </div>
     <div class="button-group">
