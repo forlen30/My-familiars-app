@@ -30,7 +30,7 @@
   gtag('config', 'G-27H58MHT85');
   </script>
 
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
@@ -40,11 +40,12 @@
         workerPath: "OneSignalSDKWorker.js"
       },
       notifyButton: {
-        enable: false // เราจะทำปุ่มเอง
+        enable: true // เปิดปุ่ม subscribe มาตรฐาน
       }
     });
   });
 </script>
+
 
 </head>
 

@@ -319,7 +319,6 @@ function showHome(triggerCollectionAnimation = false) {
         <span class="exp-text">EXP: ${expProgress.current} / ${expProgress.required}</span>
       </div>
       <button id="collection-button" class="button collection-btn">📖 กรีมัวร์ของฉัน</button>
-      <button id="btn-setting" class="button">⚙️ ตั้งค่า</button>
     </div>
     <div class="window menu-box">
       <h1>นุ่มฟู ออราเคิล</h1>
@@ -455,51 +454,6 @@ function showHome(triggerCollectionAnimation = false) {
             }, 800);
         }
     }, 50);
-}
-
-function showSettingPage() {
-  const root = document.getElementById("spa-root");
-  root.innerHTML = `
-    <div class="window">
-      <h1>ตั้งค่า</h1>
-      <span id="push-status">กำลังโหลด...</span>
-      <label class="switch">
-        <input type="checkbox" id="toggle-notification">
-        <span class="slider"></span>
-      </label>
-      <span>รับการแจ้งเตือน</span>
-      <div class="button-group">
-        <button id="btn-back">🔙 กลับ</button>
-      </div>
-      
-    </div>
-  `;
-
-  document.getElementById("btn-back").onclick = () => {
-    playSlideTransition(showHome);
-  };
-
-  // --- ย้าย logic OneSignal มาไว้ที่นี่ ---
-const status = document.getElementById('push-status');
-const toggle = document.getElementById('toggle-notification');
-toggle.disabled = true;
-status.textContent = "กำลังโหลด...";
-
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-OneSignalDeferred.push(function(OneSignal) {
-  OneSignal.isPushNotificationsEnabled().then(function(enabled) {
-    toggle.checked = enabled;
-    toggle.disabled = false;
-    status.textContent = ""; // ลบข้อความ
-  });
-  toggle.onchange = function() {
-    if (toggle.checked) {
-      OneSignal.subscribe();
-    } else {
-      OneSignal.unsubscribe();
-    }
-  };
-});
 }
 
 // ========== CARD PAGE ==========
