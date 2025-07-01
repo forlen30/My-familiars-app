@@ -30,23 +30,6 @@
   gtag('config', 'G-27H58MHT85');
   </script>
 
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-
-  OneSignal.SERVICE_WORKER_PATH = '/push-sw/OneSignalSDKWorker.js';
-  OneSignal.SERVICE_WORKER_UPDATER_PATH = '/push-sw/OneSignalSDKUpdaterWorker.js';
-
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "68a7a06b-4814-4d41-987a-f14c5631c5d5",
-      notifyButton: { enable: true },
-      autoPrompt: true
-    });
-  });
-</script>
-
-
 </head>
 
 <body oncontextmenu="return false;">
