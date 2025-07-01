@@ -319,6 +319,7 @@ function showHome(triggerCollectionAnimation = false) {
         <span class="exp-text">EXP: ${expProgress.current} / ${expProgress.required}</span>
       </div>
       <button id="collection-button" class="button collection-btn">📖 กรีมัวร์ของฉัน</button>
+      <button id="btn-setting" class="button">⚙️ ตั้งค่า</button>
     </div>
     <div class="window menu-box">
       <h1>นุ่มฟู ออราเคิล</h1>
@@ -365,6 +366,11 @@ function showHome(triggerCollectionAnimation = false) {
         
         const collectionButton = document.getElementById("collection-button");
         collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionPage); };
+
+        document.getElementById("btn-setting").onclick = () => {
+        playSlideTransition(showSettingPage);
+        };
+
 
         if (triggerCollectionAnimation) {
             setTimeout(() => {
@@ -449,6 +455,45 @@ function showHome(triggerCollectionAnimation = false) {
             }, 800);
         }
     }, 50);
+}
+
+function showSettingPage() {
+  const root = document.getElementById("spa-root");
+  root.innerHTML = `
+    <div class="window">
+      <h1>ตั้งค่า</h1>
+      <label class="switch">
+        <input type="checkbox" id="toggle-notification">
+        <span class="slider"></span>
+      </label>
+      <span>รับการแจ้งเตือน</span>
+      <div class="button-group">
+        <button id="btn-back">🔙 กลับ</button>
+      </div>
+    </div>
+  `;
+
+  // subscribe/unsubscribe ตาม toggle
+  setTimeout(() => {
+    const toggle = document.getElementById('toggle-notification');
+    OneSignal.push(function() {
+      OneSignal.isPushNotificationsEnabled().then(function(enabled) {
+        toggle.checked = enabled;
+      });
+    });
+
+    toggle.onchange = function() {
+      if (toggle.checked) {
+        OneSignal.push(function() { OneSignal.subscribe(); });
+      } else {
+        OneSignal.push(function() { OneSignal.unsubscribe(); });
+      }
+    };
+
+    document.getElementById("btn-back").onclick = () => {
+      playSlideTransition(showHome);
+    };
+  }, 20);
 }
 
 // ========== CARD PAGE ==========
@@ -667,7 +712,7 @@ function showSupporterPage() {
         <li>🌟 anuthida chuayrueang</li>
         <li>🌟 Aranya Lindroos</li>
         <li>🌟 คุณ พัชราภรณ์</li>
-        <li>🌟 และอีกหลายท่านที่ร่วมสนับสนุน ✨</li>
+        <li>🌟 Thanattha</li>
       </ul>
     </div>
     <div class="button-group">
