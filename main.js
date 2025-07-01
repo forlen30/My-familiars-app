@@ -473,27 +473,26 @@ function showSettingPage() {
     </div>
   `;
 
-  // subscribe/unsubscribe ตาม toggle
-  setTimeout(() => {
+  document.getElementById("btn-back").onclick = () => {
+    playSlideTransition(showHome);
+  };
+
+  // --- ย้าย logic OneSignal มาไว้ที่นี่ ---
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(function(OneSignal) {
     const toggle = document.getElementById('toggle-notification');
-    OneSignal.push(function() {
-      OneSignal.isPushNotificationsEnabled().then(function(enabled) {
-        toggle.checked = enabled;
-      });
+    OneSignal.isPushNotificationsEnabled().then(function(enabled) {
+      toggle.checked = enabled;
     });
 
     toggle.onchange = function() {
       if (toggle.checked) {
-        OneSignal.push(function() { OneSignal.subscribe(); });
+        OneSignal.subscribe();
       } else {
-        OneSignal.push(function() { OneSignal.unsubscribe(); });
+        OneSignal.unsubscribe();
       }
     };
-
-    document.getElementById("btn-back").onclick = () => {
-      playSlideTransition(showHome);
-    };
-  }, 20);
+  });
 }
 
 // ========== CARD PAGE ==========
