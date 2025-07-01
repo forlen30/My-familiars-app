@@ -1,6 +1,12 @@
 /sw.js
   Cache-Control: no-cache
 
+/push-sw/OneSignalSDKWorker.js
+  Service-Worker-Allowed: /
+
+/push-sw/OneSignalSDKUpdaterWorker.js
+  Service-Worker-Allowed: /
+
 /manifest.json
   Cache-Control: no-cache
 
