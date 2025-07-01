@@ -35,9 +35,9 @@ function checkForUpdates() {
             console.error('Service Worker registration failed:', error);
         });
 
-        navigator.serviceWorker.addEventListener('controllerchange', function() {
-  window.location.reload();
-});
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            window.location.reload();
+        });
     }
 }
 
