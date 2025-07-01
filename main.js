@@ -366,10 +366,6 @@ function showHome(triggerCollectionAnimation = false) {
         const collectionButton = document.getElementById("collection-button");
         collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionPage); };
 
-        document.getElementById("btn-setting").onclick = () => {
-        playSlideTransition(showSettingPage);
-        };
-
 
         if (triggerCollectionAnimation) {
             setTimeout(() => {
