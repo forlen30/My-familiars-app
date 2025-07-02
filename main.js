@@ -1,3 +1,4 @@
+console.log('--- MAIN.JS เวอร์ชันล่าสุด LOADED! ---');
 // -- Supabase Client Setup --
 const { createClient } = supabase; // <-- บรรทัดนี้ตอนนี้จะทำงานได้แล้ว เพราะเรา Import มาใน index.html
 const SUPABASE_URL = 'https://zrllfifabegzzoeelqpp.supabase.co'; // <-- ใส่ URL ของคุณ
