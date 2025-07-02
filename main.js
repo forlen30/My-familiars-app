@@ -224,8 +224,7 @@ function initializeOneSignal() {
       allowLocalhostAsSecureOrigin: true,
     });
 
-     OneSignal.showNativePrompt();
-     
+
     // 2. หลังจาก init แล้ว ให้รอฟังผลการตัดสินใจของ User
     OneSignal.on('subscriptionChange', function (isSubscribed) {
       console.log("สถานะการ Subscribe เปลี่ยนเป็น:", isSubscribed);
@@ -361,6 +360,9 @@ function showHome(triggerCollectionAnimation = false) {
         <span class="exp-text">EXP: ${expProgress.current} / ${expProgress.required}</span>
       </div>
       <button id="collection-button" class="button collection-btn">📖 กรีมัวร์ของฉัน</button>
+      <button id="subscribe-button" style="padding: 15px; font-size: 16px; margin: 20px; border-radius: 10px; border: none; background-color: #4CAF50; color: white; cursor: pointer;">
+  กดเพื่อสมัครรับการแจ้งเตือน
+</button>
     </div>
     <div class="window menu-box">
       <h1>นุ่มฟู ออราเคิล</h1>
@@ -404,6 +406,14 @@ function showHome(triggerCollectionAnimation = false) {
 
         document.getElementById("btn-draw").onclick = () => { sfxPop.play(); playSlideTransition(showCardPage); };
         document.getElementById("supporter-box").onclick = () => { sfxPop.play(); playSlideTransition(showSupporterPage); };
+
+        const subscribeButton = document.getElementById("subscribe-button");
+        if (subscribeButton) {
+            subscribeButton.onclick = function() {
+                console.log('ปุ่ม Subscribe ถูกกดแล้ว!');
+                OneSignal.showNativePrompt();
+            };
+        };
         
         const collectionButton = document.getElementById("collection-button");
         collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionPage); };
