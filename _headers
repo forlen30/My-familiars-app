@@ -1,4 +1,7 @@
-/sw.js
+/OneSignalSDKWorker.js
+  Cache-Control: no-cache
+
+/OneSignalSDKUpdaterWorker.js
   Cache-Control: no-cache
 
 /manifest.json

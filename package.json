@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@supabase/supabase-js": "^2.50.2",
-    "firebase": "^11.10.0"
+    "@supabase/supabase-js": "^2.50.2"
   }
 }
