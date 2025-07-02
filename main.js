@@ -12,8 +12,6 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 let waitingWorker;
 let countdownInterval = null; 
 
-window.addEventListener('load', checkForUpdates);
-
 function checkForUpdates() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').then(registration => {
@@ -262,11 +260,6 @@ function initializeApp() {
 }
 
 
-// เรียกใช้ฟังก์ชันนี้ตอนที่แอปเริ่มทำงาน
-window.addEventListener('load', () => {
-    checkForUpdates();
-});
-
 // ฟังก์ชันสำหรับแสดงหน้าลงทะเบียน
 function showRegistrationPage() {
     const root = document.getElementById("spa-root");
@@ -308,23 +301,31 @@ function showRegistrationPage() {
 
 // ============ SPA Main =============
 document.addEventListener('contextmenu', e => e.preventDefault());
+
+// --- จุดเริ่มต้นเดียวของแอปทั้งหมด ---
 document.addEventListener('DOMContentLoaded', () => {
-    document.body.addEventListener('touchend', function(e) {
-      if (e.target.classList.contains('button') || e.target.tagName === 'BUTTON') {
-        e.target.blur();
-      }
-    });
-    initializeApp();
+    // เริ่มระบบหลัก (ซึ่งจะเรียก OneSignal ข้างใน)
+    initializeApp();
+    
+    // เริ่มระบบเช็ค PWA Update
+    checkForUpdates();
+
+    // จัดการ UI อื่นๆ
+    document.body.addEventListener('touchend', function(e) {
+        if (e.target.classList.contains('button') || e.target.tagName === 'BUTTON') {
+            e.target.blur();
+        }
+    });
 });
 
 function playSlideTransition(cb) {
-    const slide = document.getElementById("slide-screen");
-    if (slide) {
-        slide.classList.add("active");
-        setTimeout(() => { cb && cb(); slide.classList.remove("active"); }, 500);
-    } else {
-        cb && cb();
-    }
+    const slide = document.getElementById("slide-screen");
+    if (slide) {
+        slide.classList.add("active");
+        setTimeout(() => { cb && cb(); slide.classList.remove("active"); }, 500);
+    } else {
+        cb && cb();
+    }
 }
 
 // ================================================================
