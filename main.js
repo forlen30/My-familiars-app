@@ -936,15 +936,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.OneSignal = window.OneSignal || [];
-OneSignal.push(function() {
+OneSignal.push(function () {
   OneSignal.init({
     appId: "68a7a06b-4814-4d41-987a-f14c5631c5d5",
     safari_web_id: "",
     notifyButton: {
-      enable: true,    // ถ้าอยากมีปุ่ม bell
+      enable: true
     },
-    allowLocalhostAsSecureOrigin: true, // เฉพาะ dev
-    // customize sw path ถ้า root อยู่คนละ path (ปกติไม่ต้องใช้)
-    // serviceWorkerPath: '/',
+    allowLocalhostAsSecureOrigin: true,
+    serviceWorkerPath: 'sw.js', // ใช้ sw.js ตัวเดียว
   });
 });
