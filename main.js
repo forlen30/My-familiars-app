@@ -16,7 +16,7 @@ window.addEventListener('load', checkForUpdates);
 
 function checkForUpdates() {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/OneSignalSDKWorker.js').then(registration => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
             if (registration.waiting) {
                 waitingWorker = registration.waiting;
                 showUpdateNotification();
