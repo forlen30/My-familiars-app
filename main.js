@@ -81,10 +81,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 // -- Sound Preloads --
-const sfxPop = new Audio("sound/pop.MP3?v=62");
-const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=62");
-const sfxCollect = new Audio("sound/collect.MP3?v=62"); 
-const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=62"); 
+const sfxPop = new Audio("sound/pop.MP3?v=63");
+const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=63");
+const sfxCollect = new Audio("sound/collect.MP3?v=63"); 
+const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=63"); 
 
 // ============ Data: ไพ่ทั้งหมด =============
 const cards = [
@@ -217,11 +217,42 @@ function getExpProgress(exp) {
   };
 }
 
+function initializeOneSignal() {
+  OneSignal.push(function() {
+    // 1. สั่ง init จากที่นี่ที่เดียว
+    OneSignal.init({
+      appId: "68a7a06b-4814-4d41-987a-f14c5631c5d5",
+      allowLocalhostAsSecureOrigin: true,
+    });
+
+    // 2. หลังจาก init แล้ว ให้รอฟังผลการตัดสินใจของ User
+    OneSignal.on('subscriptionChange', function (isSubscribed) {
+      console.log("สถานะการ Subscribe เปลี่ยนเป็น:", isSubscribed);
+      if (isSubscribed) {
+        // เมื่อ User กดอนุญาตแล้ว ให้ดึง Player ID
+        OneSignal.getUserId(function(userId) {
+          console.log("OneSignal Player ID:", userId);
+          
+          const playerData = loadPlayerData();
+          if (playerData && userId) {
+            // บันทึก Player ID ลง localStorage
+            playerData.playerId = userId;
+            savePlayerData(playerData);
+            console.log('Player ID ถูกบันทึกใน localStorage แล้ว');
+            
+            // ถ้าคุณพร้อมแล้ว ก็สามารถส่งไป Supabase จากตรงนี้ได้
+            // updateUserInSupabase({ ...playerData, onesignal_player_id: userId });
+          }
+        });
+      }
+    });
+  });
+}
 
 
 // ฟังก์ชันเริ่มต้นแอปทั้งหมด
 function initializeApp() {
-    savePlayerIdToSupabase();
+    initializeOneSignal();
     const playerData = loadPlayerData();
     if (playerData) {
         showHome();
@@ -230,34 +261,6 @@ function initializeApp() {
     }
 }
 
-// เพิ่มโค้ดส่วนนี้ใน main.js อาจจะใส่ไว้ในฟังก์ชัน initializeApp หรือตอนที่ User ล็อกอินสำเร็จก็ได้
-
-function savePlayerIdToSupabase() {
-    OneSignal.push(function() {
-        // รอจนกว่า User จะกดอนุญาต
-        OneSignal.on('subscriptionChange', function (isSubscribed) {
-            if (isSubscribed) {
-                // เมื่อ User กดอนุญาตแล้ว ให้ดึง Player ID
-                OneSignal.getUserId(function(userId) {
-                    console.log("OneSignal Player ID:", userId);
-
-                    // --- ตัวอย่างการนำไปบันทึก ---
-                    // สมมติว่าคุณจะเก็บ Player ID นี้ไว้ใน Supabase พร้อมกับข้อมูลผู้ใช้
-                    const playerData = loadPlayerData();
-                    if (playerData && userId) {
-                        // เพิ่มฟังก์ชันอัปเดตข้อมูลใน Supabase ของคุณ
-                        // updateUserInSupabase({ ...playerData, onesignal_player_id: userId });
-
-                        // หรืออัปเดตใน localStorage ก่อนก็ได้
-                        playerData.playerId = userId;
-                        savePlayerData(playerData);
-                        console.log('Player ID ถูกบันทึกแล้ว');
-                    }
-                });
-            }
-        });
-    });
-}
 
 // เรียกใช้ฟังก์ชันนี้ตอนที่แอปเริ่มทำงาน
 window.addEventListener('load', () => {
