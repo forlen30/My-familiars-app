@@ -1,6 +1,6 @@
 importScripts('/OneSignalSDK.sw.js');
 
-const CACHE_NAME = 'My-Familiars-v68'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
+const CACHE_NAME = 'My-Familiars-v69'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
 
 const ASSETS = [
   '/',

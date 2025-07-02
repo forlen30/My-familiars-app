@@ -411,7 +411,7 @@ function showHome(triggerCollectionAnimation = false) {
         if (subscribeButton) {
             subscribeButton.onclick = function() {
                 console.log('ปุ่ม Subscribe ถูกกดแล้ว!');
-                OneSignal.showNativePrompt();
+                OneSignal.Notifications.requestPermission();
             };
         };
         
