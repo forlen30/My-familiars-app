@@ -265,7 +265,6 @@ function initializeApp() {
 // เรียกใช้ฟังก์ชันนี้ตอนที่แอปเริ่มทำงาน
 window.addEventListener('load', () => {
     checkForUpdates();
-    savePlayerIdToSupabase(); // <--- เรียกใช้ฟังก์ชันนี้
 });
 
 // ฟังก์ชันสำหรับแสดงหน้าลงทะเบียน
