@@ -1,19 +1,27 @@
+# netlify.toml (เวอร์ชันที่แนะนำ)
+
 [build]
-  command = "echo 'Building site...'"
+  # คำสั่งนี้บอกให้ Netlify รู้ว่าไม่ต้อง build อะไรเป็นพิเศษ
+  command = "echo 'No build command required'"
+  
+  # บอกว่าไฟล์ Function ของเราอยู่ที่ไหน
   functions = "netlify/functions"
+  
+  # บอกว่าไฟล์หน้าเว็บทั้งหมดอยู่ที่ root directory
   publish = "."
 
+# กฎการ Redirect สำหรับแชร์การ์ด (สำคัญมาก)
+# จากโค้ดของคุณใน main.js ที่เรียกใช้ /.netlify/functions/share-card
 [[redirects]]
   from = "/card/:name"
   to = "/.netlify/functions/share-card?name=:name"
   status = 200
+  force = true # แนะนำให้ใส่ force = true เพื่อให้กฎนี้ทำงานก่อนกฎอื่น
 
+# กฎสำหรับ Single Page Application (SPA)
+# ถ้าหาหน้าไหนไม่เจอ ให้ไปที่ index.html เสมอ
+# ***สำคัญ: กฎนี้ต้องอยู่ล่างสุดเสมอ***
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/sw.js"
-  to = "/sw.js"
   status = 200

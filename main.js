@@ -221,6 +221,7 @@ function getExpProgress(exp) {
 
 // ฟังก์ชันเริ่มต้นแอปทั้งหมด
 function initializeApp() {
+    savePlayerIdToSupabase();
     const playerData = loadPlayerData();
     if (playerData) {
         showHome();
@@ -228,6 +229,41 @@ function initializeApp() {
         showRegistrationPage();
     }
 }
+
+// เพิ่มโค้ดส่วนนี้ใน main.js อาจจะใส่ไว้ในฟังก์ชัน initializeApp หรือตอนที่ User ล็อกอินสำเร็จก็ได้
+
+function savePlayerIdToSupabase() {
+    OneSignal.push(function() {
+        // รอจนกว่า User จะกดอนุญาต
+        OneSignal.on('subscriptionChange', function (isSubscribed) {
+            if (isSubscribed) {
+                // เมื่อ User กดอนุญาตแล้ว ให้ดึง Player ID
+                OneSignal.getUserId(function(userId) {
+                    console.log("OneSignal Player ID:", userId);
+
+                    // --- ตัวอย่างการนำไปบันทึก ---
+                    // สมมติว่าคุณจะเก็บ Player ID นี้ไว้ใน Supabase พร้อมกับข้อมูลผู้ใช้
+                    const playerData = loadPlayerData();
+                    if (playerData && userId) {
+                        // เพิ่มฟังก์ชันอัปเดตข้อมูลใน Supabase ของคุณ
+                        // updateUserInSupabase({ ...playerData, onesignal_player_id: userId });
+
+                        // หรืออัปเดตใน localStorage ก่อนก็ได้
+                        playerData.playerId = userId;
+                        savePlayerData(playerData);
+                        console.log('Player ID ถูกบันทึกแล้ว');
+                    }
+                });
+            }
+        });
+    });
+}
+
+// เรียกใช้ฟังก์ชันนี้ตอนที่แอปเริ่มทำงาน
+window.addEventListener('load', () => {
+    checkForUpdates();
+    savePlayerIdToSupabase(); // <--- เรียกใช้ฟังก์ชันนี้
+});
 
 // ฟังก์ชันสำหรับแสดงหน้าลงทะเบียน
 function showRegistrationPage() {
