@@ -81,10 +81,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 // -- Sound Preloads --
-const sfxPop = new Audio("sound/pop.MP3?v=61");
-const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=61");
-const sfxCollect = new Audio("sound/collect.MP3?v=61"); 
-const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=61"); 
+const sfxPop = new Audio("sound/pop.MP3?v=62");
+const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=62");
+const sfxCollect = new Audio("sound/collect.MP3?v=62"); 
+const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=62"); 
 
 // ============ Data: ไพ่ทั้งหมด =============
 const cards = [
@@ -933,4 +933,38 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
     }, 1000);
+});
+
+// -- Firebase Client Setup --
+// ใช้ firebase ที่โหลดผ่าน <script> ไม่ต้อง import
+const firebaseConfig = {
+  apiKey: "AIzaSyB-pwqwWI8c9BKWDGcqFWGOjv06rryWap8",
+  authDomain: "my-familiars.firebaseapp.com",
+  projectId: "my-familiars",
+  storageBucket: "my-familiars.firebasestorage.app",
+  messagingSenderId: "644836742671",
+  appId: "1:644836742671:web:2109ef8cb711d653d2b57a"
+};
+firebase.initializeApp(firebaseConfig);
+
+const messaging = firebase.messaging();
+
+// ขอ permission และดึง token
+Notification.requestPermission().then(permission => {
+  if (permission === 'granted') {
+    messaging.getToken({ vapidKey: 'BD3BJcTpsPYzPfO1xAu2jNtpbtwY2R_jDOLDFgj7MEAdoc-d37zhvKuLKxa0EKPKtPfrXrWzaQX00N8UIe9LZsU' }).then((currentToken) => {
+      if (currentToken) {
+        console.log('FCM Token:', currentToken);
+        // ส่งไปเก็บหลังบ้านคุณต่อ
+      } else {
+        console.log('No registration token available');
+      }
+    });
+  }
+});
+
+// รับข้อความขณะ user เปิดเว็บ
+messaging.onMessage(function(payload) {
+  console.log('Message received. ', payload);
+  // แสดง notification popup เองตามต้องการ
 });
