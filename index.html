@@ -66,6 +66,18 @@
 
   <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
 
+<script>
+  window.OneSignal = window.OneSignal || [];
+  OneSignal.push(function () {
+    OneSignal.init({
+      appId: "68a7a06b-4814-4d41-987a-f14c5631c5d5",
+      notifyButton: { enable: true },
+      allowLocalhostAsSecureOrigin: true,
+      serviceWorkerPath: 'sw.js'
+    });
+  });
+</script>
+
   <script src="main.js?v=62"></script>
 
   

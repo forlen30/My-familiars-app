@@ -934,16 +934,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 1000);
 });
-
-window.OneSignal = window.OneSignal || [];
-OneSignal.push(function () {
-  OneSignal.init({
-    appId: "68a7a06b-4814-4d41-987a-f14c5631c5d5",
-    safari_web_id: "",
-    notifyButton: {
-      enable: true
-    },
-    allowLocalhostAsSecureOrigin: true,
-    serviceWorkerPath: 'sw.js', // ใช้ sw.js ตัวเดียว
-  });
-});
