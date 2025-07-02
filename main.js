@@ -224,6 +224,8 @@ function initializeOneSignal() {
       allowLocalhostAsSecureOrigin: true,
     });
 
+     OneSignal.showNativePrompt();
+     
     // 2. หลังจาก init แล้ว ให้รอฟังผลการตัดสินใจของ User
     OneSignal.on('subscriptionChange', function (isSubscribed) {
       console.log("สถานะการ Subscribe เปลี่ยนเป็น:", isSubscribed);
