@@ -122,29 +122,3 @@ self.addEventListener('message', event => {
     self.skipWaiting();
   }
 });
-
-// sw.js (ใช้กับทั้ง PWA & FCM push notification)
-importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
-
-firebase.initializeApp({
-  apiKey: "AIzaSyB-pwqwWI8c9BKWDGcqFWGOjv06rryWap8",
-  authDomain: "my-familiars.firebaseapp.com",
-  projectId: "my-familiars",
-  storageBucket: "my-familiars.firebasestorage.app",
-  messagingSenderId: "644836742671",
-  appId: "1:644836742671:web:2109ef8cb711d653d2b57a",
-});
-
-const messaging = firebase.messaging();
-
-messaging.onBackgroundMessage(function(payload) {
-  // push notification จะโชว์ตรงนี้ ตอน user ปิดเว็บ
-  self.registration.showNotification(
-    payload.notification.title,
-    {
-      body: payload.notification.body,
-      icon: '/images/icon-192.png'
-    }
-  );
-});
