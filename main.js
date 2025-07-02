@@ -408,12 +408,32 @@ function showHome(triggerCollectionAnimation = false) {
         document.getElementById("supporter-box").onclick = () => { sfxPop.play(); playSlideTransition(showSupporterPage); };
 
         const subscribeButton = document.getElementById("subscribe-button");
-        if (subscribeButton) {
-            subscribeButton.onclick = function() {
-                console.log('ปุ่ม Subscribe ถูกกดแล้ว!');
-                OneSignal.Notifications.requestPermission();
-            };
-        };
+if (subscribeButton) {
+  // เปลี่ยนเป็น async function เพื่อให้ใช้ await ได้
+  subscribeButton.onclick = async function() {
+    console.log('ปุ่ม Subscribe ถูกกดแล้ว!');
+    
+    // 1. ตรวจสอบสถานะ Permission ปัจจุบัน
+    const currentPermission = await OneSignal.Notifications.getPermission();
+    console.log('สถานะ Permission ปัจจุบัน:', currentPermission);
+
+    if (currentPermission === 'granted') {
+      console.log('ผู้ใช้ได้อนุญาตไปแล้ว ไม่จำเป็นต้องขอซ้ำ');
+      return; 
+    }
+    if (currentPermission === 'denied') {
+      console.log('ผู้ใช้ได้บล็อกการแจ้งเตือนไปแล้ว ไม่สามารถขอซ้ำได้');
+      return;
+    }
+
+    // 2. ถ้าสถานะเป็น 'default' (ยังไม่ตัดสินใจ) ถึงจะขออนุญาต
+    if (currentPermission === 'default') {
+      console.log('กำลังขออนุญาต (requestPermission)...');
+      await OneSignal.Notifications.requestPermission();
+      console.log('คำสั่งขออนุญาตถูกเรียกแล้ว');
+    }
+  };
+}
         
         const collectionButton = document.getElementById("collection-button");
         collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionPage); };
