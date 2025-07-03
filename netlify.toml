@@ -1,29 +1,13 @@
 [build]
-  command = "echo 'No build command required'"
+  command = "echo 'Building site...'"
   functions = "netlify/functions"
   publish = "."
 
-# กฎสำหรับ Service Worker (สำคัญมาก - ต้องอยู่ก่อนกฎ /*)
-# บอก Netlify ว่าถ้ามีการร้องขอไฟล์เหล่านี้ ให้ส่งไฟล์นั้นๆ ไปตรงๆ ห้าม Redirect
-[[redirects]]
-  from = "/sw.js"
-  to = "/sw.js"
-  status = 200
-
-[[redirects]]
-  from = "/OneSignalSDK.sw.js"
-  to = "/OneSignalSDK.sw.js"
-  status = 200
-
-# กฎสำหรับ Netlify Function (ถ้ายังใช้อยู่)
 [[redirects]]
   from = "/card/:name"
   to = "/.netlify/functions/share-card?name=:name"
   status = 200
-  force = true
 
-# กฎสำหรับ Single Page Application (ต้องอยู่ล่างสุดเสมอ)
-# ถ้าหาหน้าไหนไม่เจอในกฎข้างบน ให้ไปที่ index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"

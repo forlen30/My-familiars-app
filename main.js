@@ -1,4 +1,3 @@
-console.log('--- MAIN.JS เวอร์ชันล่าสุด LOADED! ---');
 // -- Supabase Client Setup --
 const { createClient } = supabase; // <-- บรรทัดนี้ตอนนี้จะทำงานได้แล้ว เพราะเรา Import มาใน index.html
 const SUPABASE_URL = 'https://zrllfifabegzzoeelqpp.supabase.co'; // <-- ใส่ URL ของคุณ
@@ -12,6 +11,8 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 // =======================================
 let waitingWorker;
 let countdownInterval = null; 
+
+window.addEventListener('load', checkForUpdates);
 
 function checkForUpdates() {
     if ('serviceWorker' in navigator) {
@@ -80,10 +81,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 // -- Sound Preloads --
-const sfxPop = new Audio("sound/pop.MP3?v=63");
-const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=63");
-const sfxCollect = new Audio("sound/collect.MP3?v=63"); 
-const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=63"); 
+const sfxPop = new Audio("sound/pop.MP3?v=62");
+const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=62");
+const sfxCollect = new Audio("sound/collect.MP3?v=62"); 
+const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=62"); 
 
 // ============ Data: ไพ่ทั้งหมด =============
 const cards = [
@@ -216,24 +217,10 @@ function getExpProgress(exp) {
   };
 }
 
-function setupOneSignalListeners() {
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(function(OneSignal) {
-    OneSignal.on('subscriptionChange', function(isSubscribed) {
-      if (isSubributed) {
-        console.log("ผู้ใช้ได้ Subscribe แล้ว!");
-        OneSignal.User.getPushSubscriptionId().then(function(playerId) {
-          console.log("Player ID:", playerId);
-          // เอา playerId ไปบันทึก
-        });
-      }
-    });
-  });
-}
+
 
 // ฟังก์ชันเริ่มต้นแอปทั้งหมด
 function initializeApp() {
-    setupOneSignalListeners();
     const playerData = loadPlayerData();
     if (playerData) {
         showHome();
@@ -241,7 +228,6 @@ function initializeApp() {
         showRegistrationPage();
     }
 }
-
 
 // ฟังก์ชันสำหรับแสดงหน้าลงทะเบียน
 function showRegistrationPage() {
@@ -284,31 +270,23 @@ function showRegistrationPage() {
 
 // ============ SPA Main =============
 document.addEventListener('contextmenu', e => e.preventDefault());
-
-// --- จุดเริ่มต้นเดียวของแอปทั้งหมด ---
 document.addEventListener('DOMContentLoaded', () => {
-    // เริ่มระบบหลัก (ซึ่งจะเรียก OneSignal ข้างใน)
-    initializeApp();
-    
-    // เริ่มระบบเช็ค PWA Update
-    checkForUpdates();
-
-    // จัดการ UI อื่นๆ
-    document.body.addEventListener('touchend', function(e) {
-        if (e.target.classList.contains('button') || e.target.tagName === 'BUTTON') {
-            e.target.blur();
-        }
-    });
+    document.body.addEventListener('touchend', function(e) {
+      if (e.target.classList.contains('button') || e.target.tagName === 'BUTTON') {
+        e.target.blur();
+      }
+    });
+    initializeApp();
 });
 
 function playSlideTransition(cb) {
-    const slide = document.getElementById("slide-screen");
-    if (slide) {
-        slide.classList.add("active");
-        setTimeout(() => { cb && cb(); slide.classList.remove("active"); }, 500);
-    } else {
-        cb && cb();
-    }
+    const slide = document.getElementById("slide-screen");
+    if (slide) {
+        slide.classList.add("active");
+        setTimeout(() => { cb && cb(); slide.classList.remove("active"); }, 500);
+    } else {
+        cb && cb();
+    }
 }
 
 // ================================================================
@@ -341,9 +319,6 @@ function showHome(triggerCollectionAnimation = false) {
         <span class="exp-text">EXP: ${expProgress.current} / ${expProgress.required}</span>
       </div>
       <button id="collection-button" class="button collection-btn">📖 กรีมัวร์ของฉัน</button>
-      <button id="subscribe-button" style="padding: 15px; font-size: 16px; margin: 20px; border-radius: 10px; border: none; background-color: #4CAF50; color: white; cursor: pointer;">
-  กดเพื่อสมัครรับการแจ้งเตือน
-</button>
     </div>
     <div class="window menu-box">
       <h1>นุ่มฟู ออราเคิล</h1>
@@ -387,27 +362,6 @@ function showHome(triggerCollectionAnimation = false) {
 
         document.getElementById("btn-draw").onclick = () => { sfxPop.play(); playSlideTransition(showCardPage); };
         document.getElementById("supporter-box").onclick = () => { sfxPop.play(); playSlideTransition(showSupporterPage); };
-
-         const subscribeButton = document.getElementById("subscribe-button");
-        if (subscribeButton) {
-            // เปิดปุ่มให้กดได้
-            subscribeButton.disabled = false;
-            
-            // ผูก Event การคลิก
-            subscribeButton.onclick = function() {
-                console.log('ปุ่ม Subscribe ถูกกด!');
-                
-                const hasPermission = OneSignal.Notifications.permission;
-                console.log('สถานะ Permission ปัจจุบัน:', hasPermission);
-
-                if (!hasPermission) {
-                    console.log('ยังไม่เคยอนุญาต, กำลังขอ...');
-                    OneSignal.Notifications.requestPermission();
-                } else {
-                    alert('คุณได้สมัครรับการแจ้งเตือนไว้แล้ว');
-                }
-            };
-        }
         
         const collectionButton = document.getElementById("collection-button");
         collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionPage); };
@@ -979,4 +933,18 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
     }, 1000);
+});
+
+window.OneSignal = window.OneSignal || [];
+OneSignal.push(function() {
+  OneSignal.init({
+    appId: "68a7a06b-4814-4d41-987a-f14c5631c5d5",
+    safari_web_id: "",
+    notifyButton: {
+      enable: true,    // ถ้าอยากมีปุ่ม bell
+    },
+    allowLocalhostAsSecureOrigin: true, // เฉพาะ dev
+    // customize sw path ถ้า root อยู่คนละ path (ปกติไม่ต้องใช้)
+    // serviceWorkerPath: '/',
+  });
 });
