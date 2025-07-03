@@ -1,6 +1,6 @@
 importScripts('https://cdn.onesignal.com/sdks/OneSignalSDKWorker.js');
 
-const CACHE_NAME = 'My-Familiars-v62'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
+const CACHE_NAME = 'My-Familiars-v63'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
 
 const ASSETS = [
   '/',
@@ -91,6 +91,7 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
+  // *** ไม่ต้อง self.skipWaiting() ตรงนี้ ***
 });
 
 // Activate: ลบ cache เก่า
@@ -107,7 +108,8 @@ self.addEventListener('activate', event => {
       );
     })
   );
-  return self.clients.claim(); // ทำให้ SW คุมหน้าเว็บทันที
+  // คงไว้ได้ (ช่วยให้ SW ใหม่ takeover ทันที)
+  self.clients.claim();
 });
 
 // ดักจับทุก request: ใช้ cache ก่อน แล้ว fallback ไปหา network
@@ -119,6 +121,7 @@ self.addEventListener('fetch', event => {
   );
 });
 
+// รับ message SKIP_WAITING (จากปุ่มอัปเดตเท่านั้น)
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
