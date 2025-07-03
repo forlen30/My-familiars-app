@@ -1,6 +1,6 @@
 importScripts('https://cdn.onesignal.com/sdks/OneSignalSDKWorker.js');
 
-const CACHE_NAME = 'My-Familiars-v63'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
+const CACHE_NAME = 'My-Familiars-v64'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
 
 const ASSETS = [
   '/',
@@ -85,7 +85,7 @@ const ASSETS = [
 ];
 
 
-// ติดตั้ง SW และ cache ไฟล์ทั้งหมด
+
 self.addEventListener('install', event => {
   console.log('[SW] Installing and caching app shell...');
   event.waitUntil(
@@ -94,7 +94,6 @@ self.addEventListener('install', event => {
   // *** ไม่ต้อง self.skipWaiting() ตรงนี้ ***
 });
 
-// Activate: ลบ cache เก่า
 self.addEventListener('activate', event => {
   console.log('[SW] Activating and cleaning old caches...');
   event.waitUntil(
@@ -108,11 +107,9 @@ self.addEventListener('activate', event => {
       );
     })
   );
-  // คงไว้ได้ (ช่วยให้ SW ใหม่ takeover ทันที)
-  self.clients.claim();
+  self.clients.claim(); // คงไว้ได้
 });
 
-// ดักจับทุก request: ใช้ cache ก่อน แล้ว fallback ไปหา network
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
@@ -121,7 +118,7 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// รับ message SKIP_WAITING (จากปุ่มอัปเดตเท่านั้น)
+// รับ message จากหน้าเว็บ ถ้าต้องการอัปเดตทันที (กรณีกดปุ่ม)
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();

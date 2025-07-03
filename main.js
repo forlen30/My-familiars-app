@@ -35,12 +35,15 @@ function checkForUpdates() {
             console.error('Service Worker registration failed:', error);
         });
 
-        let refreshing = false;
-navigator.serviceWorker.addEventListener('controllerchange', () => {
-  if (refreshing) return;
-  refreshing = true;
-  window.location.reload();
-});
+        // ======== สำคัญ! ป้องกันรีเฟรชวนลูป ==========
+        // ไม่ต้อง auto reload!
+        // ถ้าอยาก reload หน้าเดียว (แนะนำใช้ใน prod)
+        // let refreshing = false;
+        // navigator.serviceWorker.addEventListener('controllerchange', () => {
+        //   if (refreshing) return;
+        //   refreshing = true;
+        //   window.location.reload();
+        // });
     }
 }
 
@@ -63,11 +66,10 @@ async function showUpdateNotification() {
     `;
         document.body.appendChild(notificationContainer);
         document.getElementById('update-now-button').addEventListener('click', () => {
-            const updateButton = document.getElementById('update-now-button');
-            updateButton.disabled = true;
-            updateButton.textContent = 'กำลังอัปเดต...';
             if (waitingWorker) {
                 waitingWorker.postMessage({ type: 'SKIP_WAITING' });
+                // ปิด popup ทันที (กันวนลูป)
+                document.body.removeChild(notificationContainer);
             }
         });
     } catch (error) {
