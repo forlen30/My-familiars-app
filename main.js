@@ -320,6 +320,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+setTimeout(() => {
+        const subscribeButton = document.getElementById("subscribe-button");
+        if (subscribeButton) {
+            subscribeButton.onclick = function() {
+                console.log('ปุ่ม Subscribe ถูกกดแล้ว!');
+                
+                const hasPermission = OneSignal.Notifications.permission;
+                console.log('เคยอนุญาตแล้วหรือยัง (true/false):', hasPermission);
+
+                if (!hasPermission) {
+                    console.log('ยังไม่เคยอนุญาต กำลังขอ...');
+                    OneSignal.Notifications.requestPermission();
+                } else {
+                    console.log('ผู้ใช้ได้อนุญาตไปแล้ว ไม่สามารถขอซ้ำ');
+                    alert('คุณได้สมัครรับการแจ้งเตือนไว้แล้ว');
+                }
+            };
+        }
+    }, 1000); // รอ 1 วินาทีเพื่อให้แน่ใจว่า showHome ทำงานเสร็จ
+
 function playSlideTransition(cb) {
     const slide = document.getElementById("slide-screen");
     if (slide) {
@@ -406,14 +426,6 @@ function showHome(triggerCollectionAnimation = false) {
 
         document.getElementById("btn-draw").onclick = () => { sfxPop.play(); playSlideTransition(showCardPage); };
         document.getElementById("supporter-box").onclick = () => { sfxPop.play(); playSlideTransition(showSupporterPage); };
-
-        const subscribeButton = document.getElementById("subscribe-button");
-        if (subscribeButton) {
-            subscribeButton.onclick = function() {
-                console.log('ปุ่ม Subscribe ถูกกดแล้ว!');
-                OneSignal.Notifications.requestPermission();
-            };
-        };
         
         const collectionButton = document.getElementById("collection-button");
         collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionPage); };
