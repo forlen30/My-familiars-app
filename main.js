@@ -324,6 +324,7 @@ function showHome(triggerCollectionAnimation = false) {
         <span class="exp-text">EXP: ${expProgress.current} / ${expProgress.required}</span>
       </div>
       <button id="collection-button" class="button collection-btn">📖 กรีมัวร์ของฉัน</button>
+      <button id="btn-noti">🔕 เปิดรับการแจ้งเตือน</button>
     </div>
     <div class="window menu-box">
       <h1>นุ่มฟู ออราเคิล</h1>
@@ -456,6 +457,48 @@ function showHome(triggerCollectionAnimation = false) {
         }
     }, 50);
 }
+
+function updateNotiButtonUI(isSubscribed) {
+  const btn = document.getElementById('btn-noti');
+  if (!btn) return;
+  if (isSubscribed) {
+    btn.textContent = '🔔 ปิดรับการแจ้งเตือน';
+    btn.className = 'button button-on';
+  } else {
+    btn.textContent = '🔕 เปิดรับการแจ้งเตือน';
+    btn.className = 'button button-off';
+  }
+}
+
+// รอ OneSignal พร้อมก่อน
+window.OneSignal = window.OneSignal || [];
+OneSignal.push(function() {
+  // โหลดสถานะครั้งแรก
+  OneSignal.isPushNotificationsEnabled().then(function(isEnabled) {
+    updateNotiButtonUI(isEnabled);
+  });
+
+  // Event ของปุ่ม
+  document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('btn-noti');
+    if (!btn) return;
+    btn.onclick = function() {
+      OneSignal.isPushNotificationsEnabled().then(function(isEnabled) {
+        if (isEnabled) {
+          OneSignal.setSubscription(false).then(() => updateNotiButtonUI(false));
+        } else {
+          OneSignal.registerForPushNotifications().then(() => updateNotiButtonUI(true));
+        }
+      });
+    };
+  });
+
+  // อัปเดต UI อัตโนมัติถ้ามีการเปลี่ยนสถานะ (เช่นผู้ใช้เปลี่ยนตรง browser)
+  OneSignal.on('subscriptionChange', function(isSubscribed) {
+    updateNotiButtonUI(isSubscribed);
+  });
+});
+
 
 // ========== CARD PAGE ==========
 function updateCountdownTimer() {

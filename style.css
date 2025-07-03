@@ -1012,3 +1012,34 @@ img {
   overflow: hidden;
 }
 
+#btn-noti {
+  display: block;
+  margin: 1.5em auto;
+  padding: 0.7em 2.2em;
+  font-size: 1.15em;
+  font-family: inherit;
+  background: linear-gradient(90deg, #8ec9ff, #a2e7f9 60%);
+  color: #222;
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px 0 #8ec9ff44;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+}
+
+#btn-noti:active {
+  background: #7cbfff;
+  color: #fff;
+}
+
+#btn-noti[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#btn-noti {
+  font-family: 'Itim', 'sans-serif';
+}
+
+.button-on { background: #d0f5e6; color: #17330a; }
+.button-off { background: #e7f1fc; color: #4d4d4d; }
