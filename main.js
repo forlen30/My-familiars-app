@@ -216,38 +216,7 @@ function getExpProgress(exp) {
   };
 }
 
-function initializeOneSignal() {
-  OneSignal.push(function() {
-    // 1. สั่ง init จากที่นี่ที่เดียว
-    OneSignal.init({
-      appId: "68a7a06b-4814-4d41-987a-f14c5631c5d5",
-      allowLocalhostAsSecureOrigin: true,
-    });
 
-
-    // 2. หลังจาก init แล้ว ให้รอฟังผลการตัดสินใจของ User
-    OneSignal.on('subscriptionChange', function (isSubscribed) {
-      console.log("สถานะการ Subscribe เปลี่ยนเป็น:", isSubscribed);
-      if (isSubscribed) {
-        // เมื่อ User กดอนุญาตแล้ว ให้ดึง Player ID
-        OneSignal.getUserId(function(userId) {
-          console.log("OneSignal Player ID:", userId);
-          
-          const playerData = loadPlayerData();
-          if (playerData && userId) {
-            // บันทึก Player ID ลง localStorage
-            playerData.playerId = userId;
-            savePlayerData(playerData);
-            console.log('Player ID ถูกบันทึกใน localStorage แล้ว');
-            
-            // ถ้าคุณพร้อมแล้ว ก็สามารถส่งไป Supabase จากตรงนี้ได้
-            // updateUserInSupabase({ ...playerData, onesignal_player_id: userId });
-          }
-        });
-      }
-    });
-  });
-}
 
 
 // ฟังก์ชันเริ่มต้นแอปทั้งหมด
@@ -319,26 +288,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
-setTimeout(() => {
-        const subscribeButton = document.getElementById("subscribe-button");
-        if (subscribeButton) {
-            subscribeButton.onclick = function() {
-                console.log('ปุ่ม Subscribe ถูกกดแล้ว!');
-                
-                const hasPermission = OneSignal.Notifications.permission;
-                console.log('เคยอนุญาตแล้วหรือยัง (true/false):', hasPermission);
-
-                if (!hasPermission) {
-                    console.log('ยังไม่เคยอนุญาต กำลังขอ...');
-                    OneSignal.Notifications.requestPermission();
-                } else {
-                    console.log('ผู้ใช้ได้อนุญาตไปแล้ว ไม่สามารถขอซ้ำ');
-                    alert('คุณได้สมัครรับการแจ้งเตือนไว้แล้ว');
-                }
-            };
-        }
-    }, 1000); // รอ 1 วินาทีเพื่อให้แน่ใจว่า showHome ทำงานเสร็จ
 
 function playSlideTransition(cb) {
     const slide = document.getElementById("slide-screen");
@@ -426,6 +375,24 @@ function showHome(triggerCollectionAnimation = false) {
 
         document.getElementById("btn-draw").onclick = () => { sfxPop.play(); playSlideTransition(showCardPage); };
         document.getElementById("supporter-box").onclick = () => { sfxPop.play(); playSlideTransition(showSupporterPage); };
+
+        const subscribeButton = document.getElementById("subscribe-button");
+if (subscribeButton) {
+  subscribeButton.onclick = function() {
+    console.log('ปุ่ม Subscribe ถูกกดแล้ว!');
+
+    const hasPermission = OneSignal.Notifications.permission;
+    console.log('เคยอนุญาตแล้วหรือยัง (true/false):', hasPermission);
+
+    if (!hasPermission) {
+      console.log('ยังไม่เคยอนุญาต กำลังขอ...');
+      OneSignal.Notifications.requestPermission();
+    } else {
+      console.log('ผู้ใช้ได้อนุญาตไปแล้ว ไม่สามารถขอซ้ำ');
+      alert('คุณได้สมัครรับการแจ้งเตือนไว้แล้ว');
+    }
+  };
+}
         
         const collectionButton = document.getElementById("collection-button");
         collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionPage); };
