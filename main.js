@@ -943,8 +943,7 @@ OneSignal.push(function() {
     notifyButton: {
       enable: true,    // ถ้าอยากมีปุ่ม bell
     },
-    allowLocalhostAsSecureOrigin: true, // เฉพาะ dev
-    // customize sw path ถ้า root อยู่คนละ path (ปกติไม่ต้องใช้)
-    // serviceWorkerPath: '/',
+    allowLocalhostAsSecureOrigin: true,
+    serviceWorkerPath: "sw.js" 
   });
 });
