@@ -1,5 +1,7 @@
-/sw.js    /sw.js    200
-/manifest.json   /manifest.json    200
-/*         /index.html    200
+/sw.js   /sw.js   200
+/OneSignalSDKWorker.js   /sw.js   200
+/OneSignalSDKUpdaterWorker.js   /sw.js   200
+/manifest.json   /manifest.json   200
+/*    /index.html   200
 /card/:name    /card/:name.html    200
 
