@@ -216,32 +216,20 @@ function getExpProgress(exp) {
   };
 }
 
-function initializeOneSignal() {
+function setupOneSignalListeners() {
   window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "68a7a06b-4814-4d41-987a-f14c5631c5d5",
-    });
-  
-
-
-    // 2. หลังจาก init แล้ว ให้รอฟังผลการตัดสินใจของ User
+  OneSignalDeferred.push(function(OneSignal) {
     OneSignal.on('subscriptionChange', function (isSubscribed) {
       console.log("สถานะการ Subscribe เปลี่ยนเป็น:", isSubscribed);
       if (isSubscribed) {
-        // เมื่อ User กดอนุญาตแล้ว ให้ดึง Player ID
         OneSignal.getUserId(function(userId) {
           console.log("OneSignal Player ID:", userId);
-          
+          // ทำการบันทึก Player ID ต่อไป...
           const playerData = loadPlayerData();
           if (playerData && userId) {
-            // บันทึก Player ID ลง localStorage
             playerData.playerId = userId;
             savePlayerData(playerData);
             console.log('Player ID ถูกบันทึกใน localStorage แล้ว');
-            
-            // ถ้าคุณพร้อมแล้ว ก็สามารถส่งไป Supabase จากตรงนี้ได้
-            // updateUserInSupabase({ ...playerData, onesignal_player_id: userId });
           }
         });
       }
@@ -249,10 +237,9 @@ function initializeOneSignal() {
   });
 }
 
-
 // ฟังก์ชันเริ่มต้นแอปทั้งหมด
 function initializeApp() {
-    initializeOneSignal();
+    setupOneSignalListeners();
     const playerData = loadPlayerData();
     if (playerData) {
         showHome();
