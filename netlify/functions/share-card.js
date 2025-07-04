@@ -60,11 +60,17 @@ exports.handler = async function(event, context) {
   try {
     const cardName = decodeURIComponent(event.queryStringParameters.name || "Default");
     const card = cards.find(c => c.name.toLowerCase() === cardName.toLowerCase());
-    const siteUrl = "https://my-familiars.netlify.app"; 
-    const pageTitle = card ? `${card.name} | My Familiars` : "My Familiars";
-    const pageDescription = card ? card.message : "สุ่มไพ่พยากรณ์ประจำวันของคุณ";
-    const imageUrl = card ? `${siteUrl}/${card.image}` : `${siteUrl}/images/icon-512.png`;
 
+    const siteUrl = "https://my-familiars.netlify.app"; 
+    
+    // กำหนดค่าเริ่มต้นสำหรับกรณีที่หาการ์ดไม่เจอ
+    const pageTitle = card ? `${card.name} | My Familiars` : "My Familiars";
+    const pageDescription = card ? card.advice : "สุ่มไพ่พยากรณ์ประจำวันของคุณ";
+    const imageUrl = card ? `${siteUrl}/images/${card.name.toLowerCase().replace(/ /g, '-')}-share.png` : `${siteUrl}/images/icon-512.png`; // สมมติว่ามีไฟล์รูปสำหรับแชร์โดยเฉพาะ
+    const pageUrl = card ? `${siteUrl}/card/${encodeURIComponent(card.name)}` : siteUrl;
+
+    // --- ส่วนที่แก้ไข ---
+    // สร้าง HTML ที่ไม่มีสคริปต์ Redirect แล้ว แต่เพิ่ม Meta Refresh แทน
     const html = `
       <!DOCTYPE html>
       <html lang="th">
@@ -75,24 +81,32 @@ exports.handler = async function(event, context) {
         <meta property="og:title" content="${pageTitle}">
         <meta property="og:description" content="${pageDescription}">
         <meta property="og:image" content="${imageUrl}">
-        <meta property="og:url" content="${siteUrl}/card/${encodeURIComponent(cardName)}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:url" content="${pageUrl}">
         <meta property="og:type" content="website">
         <meta name="twitter:card" content="summary_large_image">
-        <script>window.location.href = '${siteUrl}';</script>
+        
+        <meta http-equiv="refresh" content="0; url=${siteUrl}" />
       </head>
-      <body>Redirecting...</body>
+      <body>
+        <h1>${pageTitle}</h1>
+        <p>กำลังเปลี่ยนเส้นทางไปที่ My Familiars...</p>
+        <p>หากไม่ไปอัตโนมัติ, <a href="${siteUrl}">คลิกที่นี่</a>.</p>
+      </body>
       </html>
     `;
 
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'text/html' },
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
       body: html,
     };
   } catch (error) {
+    console.error(error);
     return {
       statusCode: 500,
-      body: "error"
+      body: "เกิดข้อผิดพลาดในการสร้างหน้าแชร์"
     };
   }
 };

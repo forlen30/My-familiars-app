@@ -735,8 +735,7 @@ if (shareButton) {
         sfxPop.play();
         const cardToShare = JSON.parse(localStorage.getItem("dailyCard"));
         if (!cardToShare) return alert("ไม่พบข้อมูลการ์ดที่จะแชร์ครับ");
-
-        // **** แก้ไข URL ตรงนี้ให้เป็น URL ของเว็บ V2 คุณ ****
+        
         const appUrl = 'https://my-familiars.netlify.app'; 
         
         // สร้าง URL สำหรับแชร์ที่มีชื่อการ์ดต่อท้าย
