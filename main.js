@@ -17,11 +17,14 @@ window.addEventListener('load', checkForUpdates);
 function checkForUpdates() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').then(registration => {
+            // ส่วนนี้ทำงานเมื่อมี worker ใหม่ "รอ" ที่จะทำงานอยู่แล้วตอนเปิดหน้าเว็บ
             if (registration.waiting) {
                 waitingWorker = registration.waiting;
                 showUpdateNotification();
                 return;
             }
+
+            // ส่วนนี้ทำงานเมื่อ "พบ" worker ใหม่ที่กำลังจะติดตั้ง
             registration.addEventListener('updatefound', () => {
                 const newWorker = registration.installing;
                 newWorker.addEventListener('statechange', () => {
@@ -35,15 +38,15 @@ function checkForUpdates() {
             console.error('Service Worker registration failed:', error);
         });
 
-        // ======== สำคัญ! ป้องกันรีเฟรชวนลูป ==========
-        // ไม่ต้อง auto reload!
-        // ถ้าอยาก reload หน้าเดียว (แนะนำใช้ใน prod)
-        // let refreshing = false;
-        // navigator.serviceWorker.addEventListener('controllerchange', () => {
-        //   if (refreshing) return;
-        //   refreshing = true;
-        //   window.location.reload();
-        // });
+        // --- ส่วนที่แก้ไข ---
+        // เพิ่มโค้ดส่วนนี้เข้าไปเพื่อจัดการการรีเฟรชหน้าเว็บโดยอัตโนมัติ
+        let refreshing;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) return;
+            window.location.reload();
+            refreshing = true;
+        });
+        // --- สิ้นสุดส่วนที่แก้ไข ---
     }
 }
 
