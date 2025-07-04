@@ -87,10 +87,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 
 // -- Sound Preloads --
-const sfxPop = new Audio("sound/pop.MP3?v=66");
-const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=66");
-const sfxCollect = new Audio("sound/collect.MP3?v=66"); 
-const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=66"); 
+const sfxPop = new Audio("sound/pop.MP3?v=67");
+const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=67");
+const sfxCollect = new Audio("sound/collect.MP3?v=67"); 
+const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=67"); 
 
 // ============ Data: ไพ่ทั้งหมด =============
 const cards = [
@@ -735,7 +735,7 @@ if (shareButton) {
         sfxPop.play();
         const cardToShare = JSON.parse(localStorage.getItem("dailyCard"));
         if (!cardToShare) return alert("ไม่พบข้อมูลการ์ดที่จะแชร์ครับ");
-        
+
         const appUrl = 'https://my-familiars.netlify.app'; 
         
         // สร้าง URL สำหรับแชร์ที่มีชื่อการ์ดต่อท้าย
