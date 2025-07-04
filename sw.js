@@ -14,6 +14,7 @@ const ASSETS = [
   '/images/setting-icon.png',
   '/images/google-icon.png',
   '/images/facebook-icon.png',
+  '/images/question-icon.png',
   '/images/card-back.png',
   '/images/Capybara.png',
   '/images/Alicorn.png',

@@ -85,6 +85,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
   console.log("Install prompt available");
 });
 
+
 // -- Sound Preloads --
 const sfxPop = new Audio("sound/pop.MP3?v=62");
 const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=62");
@@ -234,6 +235,12 @@ function initializeApp() {
     }
 }
 
+let dailyQuestions = [];
+fetch('questions.json')
+  .then(res => res.json())
+  .then(data => { dailyQuestions = data;  
+});
+
 // ฟังก์ชันสำหรับแสดงหน้าลงทะเบียน
 function showRegistrationPage() {
     const root = document.getElementById("spa-root");
@@ -304,8 +311,22 @@ function showHome(triggerCollectionAnimation = false) {
         showRegistrationPage();
         return;
     }
+
+     const triggerExpAnimation = sessionStorage.getItem('triggerExpAnimation') === 'true';
+    if (triggerExpAnimation) {
+        sessionStorage.removeItem('triggerExpAnimation'); // ใช้แล้วลบทิ้งทันที
+    }
+
+     // --- ส่วนที่เพิ่มเข้ามาสำหรับฟีเจอร์ใหม่ ---
+    let newBadgeHtml = ''; // สร้างตัวแปรสำหรับเก็บ HTML ของป้าย
+
+    // ตรวจสอบว่าผู้ใช้เคยเห็นฟีเจอร์นี้หรือยัง
+    if (!playerData.hasSeenDailyQuestion) {
+        newBadgeHtml = '<span class="new-badge">ใหม่!</span>'; // ถ้ายังไม่เคยเห็น ให้สร้างป้าย
+    }
+    // --- จบส่วนที่เพิ่มเข้ามา ---
     
-    let initialExpForDisplay = triggerCollectionAnimation ? lastKnownExp : playerData.exp;
+    let initialExpForDisplay = (triggerCollectionAnimation || triggerExpAnimation) ? lastKnownExp : playerData.exp;
     lastKnownExp = playerData.exp; 
 
     trackPageView('/', 'Home Page');
@@ -331,6 +352,12 @@ function showHome(triggerCollectionAnimation = false) {
       <button class="button" id="btn-draw">คลิกเพื่อเริ่มสุ่มไพ่</button>
       <img src="images/card-in-box.png" class="card-in-box" alt="สุ่มไพ่รายวัน" />
     </div>
+      <div class="daily-question-box">
+      ${newBadgeHtml} 
+      <h1>ภารกิจคำถามรายวัน</h1>
+      <button class="button" id="btn-daily-question">คลิกเพื่อตอบคำถาม</button>
+      <img src="images/question-icon.png" class="question-icon" alt="คำถามรายวัน" />
+    </div>
     <div class="encyclopedia-box menu-box clickable-box" onclick="return false;" tabindex="0">
       <strong>สารานุกรม สมุนไพรเวท</strong><br>
       <span style="font-size:1em;color:#8ec9ff;">Coming Soon ...</span>
@@ -348,113 +375,75 @@ function showHome(triggerCollectionAnimation = false) {
     </div>
     <div class="supporter-box menu-box clickable-box" id="supporter-box">
       <strong>ผู้สนับสนุนของเรา</strong><br>
-      <span>💖 กดเพื่อดูรายชื่อ 💖</span>
+      <span>กดเพื่อดูรายชื่อ</span>
       <img src="images/love.png" class="love" alt="รัก" />
     </div>
   `;
   
-    window.scrollTo(0, 0); 
-
+    window.scrollTo(0, 0);
+    // วางโค้ดส่วนนี้แทนที่โค้ดเก่าทั้งหมด
     setTimeout(() => {
-        const expDisplayElement = root.querySelector('.exp-text'); 
-        const expFillElement = root.querySelector('.exp-bar-fill'); 
+    document.getElementById("btn-draw").onclick = () => { sfxPop.play(); playSlideTransition(showCardPage); };
+    document.getElementById("btn-daily-question").onclick = () => { sfxPop.play(); playSlideTransition(showDailyQuestionPage); };
+    document.getElementById("supporter-box").onclick = () => { sfxPop.play(); playSlideTransition(showSupporterPage); };
+    const collectionButton = document.getElementById("collection-button");
+    collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionHubPage); };
 
-        if (expDisplayElement && expFillElement) {
-            const initialExpProgress = getExpProgress(initialExpForDisplay);
-            expDisplayElement.textContent = `EXP: ${initialExpProgress.current.toFixed(0)} / ${initialExpProgress.required}`;
-            expFillElement.style.width = `${initialExpProgress.percentage}%`;
+     // --- เพิ่ม Logic ใหม่สำหรับ Light Sweep เข้ามาตรงนี้ ---
+        if (!playerData.hasSeenDailyQuestion) {
+            const questionButton = document.getElementById('btn-daily-question');
+            if (questionButton) {
+                questionButton.classList.add('light-sweep-effect');
+            }
+            // อัปเดตข้อมูลว่าผู้ใช้เห็นแล้ว และบันทึก
+            playerData.hasSeenDailyQuestion = true;
+            savePlayerData(playerData);
         }
+        // --- จบส่วนของ Light Sweep ---
 
-        document.getElementById("btn-draw").onclick = () => { sfxPop.play(); playSlideTransition(showCardPage); };
-        document.getElementById("supporter-box").onclick = () => { sfxPop.play(); playSlideTransition(showSupporterPage); };
-        
-        const collectionButton = document.getElementById("collection-button");
-        collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionPage); };
+    // --- ส่วนของอนิเมชันที่แก้ไขแล้ว ---
+    if (triggerCollectionAnimation) {
+        // อนิเมชันแบบเต็ม (เมื่อสุ่มการ์ด)
+        setTimeout(() => {
+            const collectionBtnRect = collectionButton.getBoundingClientRect();
+            const startY_fly = window.innerHeight / 2;
+            const startX_fly = window.innerWidth / 2;
+            const targetY_fly = collectionBtnRect.top + collectionBtnRect.height / 2;
+            const targetX_fly = collectionBtnRect.left + collectionBtnRect.width / 2;
+            const flyingCard = document.createElement('div');
+            flyingCard.className = 'flying-card';
+            flyingCard.style.setProperty('--start-y', `${startY_fly}px`);
+            flyingCard.style.setProperty('--start-x', `${startX_fly}px`);
+            flyingCard.style.setProperty('--target-y', `${targetY_fly}px`);
+            flyingCard.style.setProperty('--target-x', `${targetX_fly}px`);
+            document.body.appendChild(flyingCard);
 
-
-        if (triggerCollectionAnimation) {
             setTimeout(() => {
-                const expBarContainer = root.querySelector('.exp-bar-container');
-                if (!expBarContainer || !collectionButton) return;
-                const collectionBtnRect = collectionButton.getBoundingClientRect();
-                const startY_fly = window.innerHeight / 2; 
-                const startX_fly = window.innerWidth / 2; 
-                const targetY_fly = collectionBtnRect.top + collectionBtnRect.height / 2;
-                const targetX_fly = collectionBtnRect.left + collectionBtnRect.width / 2;
-                const flyingCard = document.createElement('div');
-                flyingCard.className = 'flying-card';
-                flyingCard.style.setProperty('--start-y', `${startY_fly}px`);
-                flyingCard.style.setProperty('--start-x', `${startX_fly}px`);
-                flyingCard.style.setProperty('--target-y', `${targetY_fly}px`);
-                flyingCard.style.setProperty('--target-x', `${targetX_fly}px`);
-                document.body.appendChild(flyingCard);
-                
+                if (document.body.contains(flyingCard)) {
+                    document.body.removeChild(flyingCard);
+                }
+                collectionButton.classList.add('pop-effect');
+                if (typeof sfxCollect !== 'undefined') {
+                    sfxCollect.currentTime = 0;
+                    sfxCollect.play();
+                }
+
                 setTimeout(() => {
-                    if (document.body.contains(flyingCard)) {
-                      document.body.removeChild(flyingCard);
+                    collectionButton.classList.remove('pop-effect');
+                    if (playerData.exp > initialExpForDisplay) {
+                        playExpBarAnimation(playerData, initialExpForDisplay);
                     }
-                    collectionButton.classList.add('pop-effect');
-                    if (typeof sfxCollect !== 'undefined') {
-                        sfxCollect.currentTime = 0; 
-                        sfxCollect.play(); 
-                    }
-                    
-                    setTimeout(() => {
-                        collectionButton.classList.remove('pop-effect'); 
-                        const finalExp = playerData.exp; 
-                        
-                        if (finalExp > initialExpForDisplay) { 
-                            sfxProgressBar.currentTime = 0; 
-                            sfxProgressBar.play(); 
-                            const expAnimationDuration = 1000;
-                            const expChangePerMs = (finalExp - initialExpForDisplay) / expAnimationDuration;
-                            let currentAnimatedValue = initialExpForDisplay;
-                            const animateExp = (startTime) => {
-                                const currentTime = performance.now();
-                                const elapsed = currentTime - startTime;
-                                if (elapsed < expAnimationDuration) {
-                                    currentAnimatedValue = initialExpForDisplay + (expChangePerMs * elapsed); 
-                                    if (currentAnimatedValue > finalExp) currentAnimatedValue = finalExp; 
-                                    const animatedExpProgress = getExpProgress(currentAnimatedValue);
-                                    expDisplayElement.textContent = `EXP: ${animatedExpProgress.current.toFixed(0)} / ${animatedExpProgress.required}`;
-                                    expFillElement.style.width = `${animatedExpProgress.percentage}%`;
-                                    requestAnimationFrame(() => animateExp(startTime));
-                                } else {
-                                    const animatedExpProgress = getExpProgress(finalExp);
-                                    expDisplayElement.textContent = `EXP: ${animatedExpProgress.current.toFixed(0)} / ${animatedExpProgress.required}`;
-                                    expFillElement.style.width = `${animatedExpProgress.percentage}%`;
-                                    sfxProgressBar.pause(); 
+                }, 400);
+            }, 1500);
+        }, 800);
 
-                                    const oldRank = getRankFromExp(initialExpForDisplay);
-                                    const newRank = getRankFromExp(playerData.exp);
-
-                                  if (oldRank !== newRank) {
-                                      console.log(`Rank Up! From ${oldRank} to ${newRank}`);
-                                      const rankContainer = document.getElementById('player-rank-container');
-                                      const rankTitle = rankContainer.querySelector('.player-rank-title');
-                                      
-                                      if (rankTitle) {
-                                          rankTitle.classList.add('rank-out');
-                                          setTimeout(() => {
-                                              rankTitle.textContent = `Ranking : ${newRank}`;
-                                              rankTitle.classList.remove('rank-out');
-                                              rankTitle.classList.add('rank-in');
-                                          }, 500);
-                                      }
-                                  }
-                                }
-                            };
-                            requestAnimationFrame((timestamp) => animateExp(timestamp)); 
-                        } else {
-                            const animatedExpProgress = getExpProgress(finalExp);
-                            expDisplayElement.textContent = `EXP: ${animatedExpProgress.current.toFixed(0)} / ${animatedExpProgress.required}`;
-                            expFillElement.style.width = `${animatedExpProgress.percentage}%`;
-                        }
-                    }, 400); 
-                }, 1500);
-            }, 800);
-        }
-    }, 50);
+    } else if (triggerExpAnimation) {
+        // อนิเมชันเฉพาะ EXP (เมื่อตอบคำถามถูก)
+        setTimeout(() => {
+             playExpBarAnimation(playerData, initialExpForDisplay);
+        }, 500);
+    }
+}, 50);
 }
 
 // ========== CARD PAGE ==========
@@ -488,6 +477,160 @@ function updateCountdownTimer() {
     }
 }
 
+function playExpBarAnimation(playerData, initialExp) {
+    const expDisplayElement = document.querySelector('.exp-text');
+    const expFillElement = document.querySelector('.exp-bar-fill');
+    if (!expDisplayElement || !expFillElement) return;
+
+    sfxProgressBar.currentTime = 0;
+    sfxProgressBar.play();
+
+    const finalExp = playerData.exp;
+    const expAnimationDuration = 1000;
+    const expChangePerMs = (finalExp - initialExp) / expAnimationDuration;
+    let currentAnimatedValue = initialExp;
+
+    const animateExp = (startTime) => {
+        const currentTime = performance.now();
+        const elapsed = currentTime - startTime;
+
+        if (elapsed < expAnimationDuration) {
+            currentAnimatedValue = initialExp + (expChangePerMs * elapsed);
+            if (currentAnimatedValue > finalExp) currentAnimatedValue = finalExp;
+            
+            const animatedExpProgress = getExpProgress(currentAnimatedValue);
+            expDisplayElement.textContent = `EXP: ${animatedExpProgress.current.toFixed(0)} / ${animatedExpProgress.required}`;
+            expFillElement.style.width = `${animatedExpProgress.percentage}%`;
+            requestAnimationFrame(() => animateExp(startTime));
+        } else {
+            const finalProgress = getExpProgress(finalExp);
+            expDisplayElement.textContent = `EXP: ${finalProgress.current.toFixed(0)} / ${finalProgress.required}`;
+            expFillElement.style.width = `${finalProgress.percentage}%`;
+            sfxProgressBar.pause();
+
+            const oldRank = getRankFromExp(initialExp);
+            const newRank = getRankFromExp(finalExp);
+
+            if (oldRank !== newRank) {
+                const rankContainer = document.getElementById('player-rank-container');
+                const rankTitle = rankContainer.querySelector('.player-rank-title');
+                if (rankTitle) {
+                    rankTitle.classList.add('rank-out');
+                    setTimeout(() => {
+                        rankTitle.textContent = `Ranking : ${newRank}`;
+                        rankTitle.classList.remove('rank-out');
+                        rankTitle.classList.add('rank-in');
+                    }, 500);
+                }
+            }
+        }
+    };
+    requestAnimationFrame((timestamp) => animateExp(timestamp));
+}
+
+// ฟังก์ชันสำหรับหน้าคลังสะสม (Hub) ฉบับแก้ไข
+function showCollectionHubPage() {
+    trackPageView('/collection-hub', 'Collection Hub');
+    const root = document.getElementById("spa-root");
+    const playerData = loadPlayerData();
+    const collectedCardsCount = playerData.collectedCards?.length || 0;
+    const answeredQuestionsCount = playerData.answeredQuestions?.length || 0;
+
+    root.innerHTML = `
+        <div class="window">
+            <h1>กรีมัวร์ของฉัน</h1>
+            <p>คลังรวบรวมทุกสิ่งที่คุณค้นพบในการเดินทาง</p>
+            <div class="hub-grid">
+                <div class="collection-category-box" id="hub-cards">
+                    <img src="images/card-in-box.png" class="icon" alt="คอลเลคชันการ์ด" />
+                    <div class="details">
+                        <h3>คอลเลคชันการ์ด</h3>
+                        <p>สะสมแล้ว ${collectedCardsCount} / ${cards.length} ใบ</p>
+                    </div>
+                </div>
+                <div class="collection-category-box" id="hub-questions">
+                    <img src="images/question-icon.png" class="icon" alt="บันทึกคำถาม-คำตอบ" />
+                    <div class="details">
+                        <h3>บันทึกคำถาม-คำตอบ</h3>
+                        <p>ตอบแล้ว ${answeredQuestionsCount} / ${dailyQuestions.length} ข้อ</p>
+                    </div>
+                </div>
+                <div class="collection-category-box" style="opacity: 0.5; cursor: default;">
+                    <img src="images/leaf.png" class="icon" alt="สารานุกรมสมุนไพร" />
+                    <div class="details">
+                        <h3>สารานุกรมสมุนไพร</h3>
+                        <p>Coming Soon...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="button-group">
+            <button id="btn-back"> กลับ</button>
+        </div>
+    `;
+
+    setTimeout(() => {
+        document.getElementById("btn-back").onclick = () => { sfxPop.play(); playSlideTransition(showHome); };
+        document.getElementById("hub-cards").onclick = () => { sfxPop.play(); playSlideTransition(showCardCollectionPage); };
+        document.getElementById("hub-questions").onclick = () => { sfxPop.play(); playSlideTransition(showQuestionCollectionPage); };
+    }, 50);
+}
+
+// ฟังก์ชันสำหรับหน้าบันทึกคำถาม
+function showQuestionCollectionPage() {
+    trackPageView('/question-collection', 'Question Collection');
+    const root = document.getElementById("spa-root");
+    const playerData = loadPlayerData();
+    const answeredQuestions = playerData.answeredQuestions || []; // <-- อ่านจากข้อมูลใหม่
+
+    let questionListHtml = '';
+    if (answeredQuestions.length === 0) {
+        questionListHtml = `<p style="text-align:center; color: #888;">ยังไม่มีคำถามที่ตอบ<br>ลองไปตอบคำถามรายวันดูสิ!</p>`;
+    } else {
+        // วนลูปจากข้อมูลใหม่ ซึ่งมีทั้ง index และ choice
+        questionListHtml = answeredQuestions.map(answeredItem => { 
+            const q = dailyQuestions[answeredItem.index];
+            if (!q) return '';
+
+            // --- ส่วนที่แก้ไขการแสดงผล ---
+            // 1. ตัดตัวอักษร A) B) ที่นำหน้าคำอธิบายออก
+            const cleanExplanation = q.explanation.replace(/^[A-Z]\) /, '');
+
+            // 2. แสดงตัวเลือก (A หรือ B) ที่ผู้ใช้เคยตอบ
+            return `
+                <div class="question-log-item" data-index="${answeredItem.index}">
+                    <div class="question-title">${q.question}</div>
+                    <div class="explanation-content">
+                        <p><strong>คำตอบของคุณ:</strong> ${answeredItem.choice}</p> 
+                        <p><strong>คำอธิบาย:</strong> ${cleanExplanation}</p>
+                    </div>
+                </div>
+            `;
+            // --- สิ้นสุดส่วนที่แก้ไข ---
+        }).join('');
+    }
+
+    root.innerHTML = `
+        <div class="window">
+            <h1>บันทึกคำถาม-คำตอบ</h1>
+            <div class="question-log-container">${questionListHtml}</div>
+        </div>
+        <div class="button-group">
+            <button id="btn-back"> กลับ</button>
+        </div>
+    `;
+
+    setTimeout(() => {
+        document.getElementById("btn-back").onclick = () => { sfxPop.play(); playSlideTransition(showCollectionHubPage); };
+        
+        document.querySelectorAll('.question-log-item').forEach(item => {
+            item.addEventListener('click', () => {
+                sfxPop.play();
+                item.classList.toggle('open');
+            });
+        });
+    }, 50);
+}
 // ================================================================
 // 2. จากนั้น วางโค้ดส่วนนี้ทับฟังก์ชัน showCardPage ของเดิม
 // ================================================================
@@ -510,8 +653,8 @@ function showCardPage() {
       <p id="card-advice" class="card-advice-text"></p> 
     </div>
     <div class="center-wrapper"><p id="countdown-timer" class="countdown-timer cute-timer" style="display:none;"></p></div>
-    <div class="button-group"><button id="btn-back">🔙 กลับ</button>
-    <button id="btn-share-facebook">🔗 แชร์</button> </div>
+    <div class="button-group"><button id="btn-back"> กลับ</button>
+    <button id="btn-share-facebook">แชร์</button> </div>
   `;
 
     const flipCard = document.getElementById("flip-card");
@@ -616,7 +759,6 @@ if (shareButton) {
     }, 30);
 }
 
-
 // ============ DRAW CARD ============
 function drawCard(viewOnly = false) {
   const today = new Date().toLocaleDateString();
@@ -654,8 +796,180 @@ function showCard(card) {
     }
 }
 
+function showDailyQuestionPage() {
+  const root = document.getElementById("spa-root");
+  if (!root) return;
 
+  let playerData = loadPlayerData();
+  const answeredIndexes = playerData.answeredIndexes || [];
+  const today = new Date().toLocaleDateString('en-CA');
 
+  fetch('questions.json?v=' + new Date().getTime())
+    .then(response => response.json())
+    .then(questions => {
+      let randomIndex;
+      if (playerData.todaysQuestion && playerData.todaysQuestion.date === today) {
+        randomIndex = playerData.todaysQuestion.index;
+      } else {
+        const availableIndexes = getAvailableQuestionIndexes(questions, answeredIndexes);
+        if (availableIndexes.length === 0) {
+    root.innerHTML = `
+        <div class="window daily-question-menu-box">
+            <h2>สุดยอดไปเลย!</h2>
+            <p>คุณตอบคำถามรายวันครบทุกข้อแล้ว<br>พบกันใหม่ในคำถามชุดถัดไปนะคะ ✨</p>
+        </div>
+        <div class="button-group">
+            <button id="btn-back"> กลับ</button>
+        </div>
+    `;
+    
+    // อย่าลืมใส่โค้ดให้ปุ่ม 'กลับ' ทำงานด้วย
+    setTimeout(() => {
+        document.getElementById("btn-back").onclick = () => {
+            sfxPop.play();
+            playSlideTransition(showHome);
+        };
+    }, 30);
+
+    return;
+}
+        randomIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
+        playerData.todaysQuestion = { date: today, index: randomIndex };
+        savePlayerData(playerData);
+      }
+
+      const q = questions[randomIndex];
+
+      root.innerHTML = `
+        <div class="window daily-question-menu-box">
+          <h2>คำถามรายวัน</h2>
+          <p class="daily-question-title">${q.question}</p>
+          <div class="daily-choices-container">
+            <button class="daily-choice-btn" id="choiceA">${q.choices[0]}</button>
+            <button class="daily-choice-btn" id="choiceB">${q.choices[1]}</button>
+          </div>
+          <div id="daily-explanation" class="daily-explanation-box"></div>
+        </div>
+        <div class="button-group"><button id="btn-back"> กลับ</button></div>
+      `;
+
+      setTimeout(() => {
+  document.querySelector('.daily-question-menu-box').classList.add('fade-in-question');
+}, 30);
+
+setTimeout(() => {
+  // ปุ่ม back
+  document.getElementById("btn-back").onclick = () => {
+    sfxPop.play();
+    playSlideTransition(showHome);
+  };
+
+  // ตรวจสอบว่าตอบไปแล้ววันนี้หรือยัง
+  if (
+    playerData.lastQuestionAnsweredDate === today &&
+    playerData.lastQuestionResult &&
+    playerData.todaysQuestion &&
+    playerData.todaysQuestion.index === randomIndex
+  ) {
+    // ตอบแล้ววันนี้ => show เฉลย, ปิดปุ่ม
+    showDailyExplanationInPlace(playerData.lastQuestionResult, q);
+    document.getElementById("choiceA").disabled = true;
+    document.getElementById("choiceB").disabled = true;
+  } else {
+    // ยังไม่ตอบ => เปิดปุ่ม
+    document.getElementById("choiceA").disabled = false;
+    document.getElementById("choiceB").disabled = false;
+    document.getElementById("choiceA").onclick = () => handleDailyAnswer('A', q, randomIndex);
+    document.getElementById("choiceB").onclick = () => handleDailyAnswer('B', q, randomIndex);
+  }
+}, 20);
+    });
+}
+
+function showDailyExplanationInPlace(result, question) {
+    const explanationDiv = document.getElementById("daily-explanation");
+    if (!explanationDiv) return;
+
+    // ตรวจสอบผลลัพธ์ที่เก็บไว้ (result) แล้วแสดงข้อความ
+     if (result.correct) {
+    explanationDiv.innerHTML = `<p style="color:green;">✅ ตอบถูก! ได้รับ EXP +25</p><p>${result.explanation}</p>`;
+        const correctBtn = document.getElementById(result.answer === 'A' ? 'choiceA' : 'choiceB');
+        if (correctBtn) {
+            correctBtn.classList.add('correct');
+        }
+    } else {
+    explanationDiv.innerHTML = `<p style="color:red;">❌ ตอบผิด<br>กลับมาตอบใหม่ได้วันถัดไป!</p>`;
+        const incorrectBtn = document.getElementById(result.answer === 'A' ? 'choiceA' : 'choiceB');
+        if (incorrectBtn) {
+            incorrectBtn.classList.add('incorrect');
+        }
+    }
+      explanationDiv.classList.add('fade-in-explanation');
+}
+
+function getAvailableQuestionIndexes(questions, answeredIndexes) {
+  answeredIndexes = answeredIndexes || [];
+  return questions.map((q, i) => i).filter(i => !answeredIndexes.includes(i));
+}
+
+function handleDailyAnswer(choice, question, index) {
+
+  sfxPop.play();
+
+  let playerData = loadPlayerData();
+  const today = new Date().toLocaleDateString('en-CA');
+  const isCorrect = (choice === question.answer);
+
+  // เก็บผลลัพธ์ล่าสุด
+  playerData.lastQuestionAnsweredDate = today;
+  playerData.lastQuestionResult = {
+    answer: choice,
+    correct: isCorrect,
+    explanation: question.explanation,
+    index: index
+  };
+  playerData.todaysQuestion = { date: today, index: index };
+
+  if (isCorrect) {
+    // --- ส่วนที่แก้ไข ---
+    // สร้าง array ใหม่ถ้ายังไม่มี
+    playerData.answeredQuestions = playerData.answeredQuestions || [];
+    
+    // เช็คว่าเคยตอบข้อนี้ถูกแล้วหรือยัง (ป้องกันการเก็บข้อมูลซ้ำ)
+    if (!playerData.answeredQuestions.some(q => q.index === index)) {
+      // เก็บทั้ง index และ choice ของผู้ใช้
+      playerData.answeredQuestions.push({ index: index, choice: choice });
+    }
+    // --- สิ้นสุดส่วนที่แก้ไข ---
+
+    playerData.exp = (playerData.exp || 0) + 25;
+    playerData.rank = getRankFromExp(playerData.exp);
+    sessionStorage.setItem('triggerExpAnimation', 'true');
+  }
+  savePlayerData(playerData);
+
+  const selectedBtn = document.getElementById(choice === "A" ? "choiceA" : "choiceB");
+  if (isCorrect) {
+    selectedBtn.classList.add("correct");
+  } else {
+    selectedBtn.classList.add("incorrect");
+  }
+
+  setTimeout(() => {
+    document.getElementById("choiceA").disabled = true;
+    document.getElementById("choiceB").disabled = true;
+  }, 100);
+
+  const explanationDiv = document.getElementById("daily-explanation");
+  explanationDiv.innerHTML = `
+    <div class="explanation-inner">
+      ${isCorrect
+        ? `<p style="color:green;">✅ ตอบถูก! ได้รับ EXP +25</p><p>${question.explanation.replace(/^[A-Z]\) /, '')}</p>`
+        : `<p style="color:red;">❌ ตอบผิด<br>กลับมาตอบใหม่ได้วันถัดไป!</p>`
+      }
+    </div>`;
+  explanationDiv.classList.add('fade-in-explanation');
+}
 
 // ============ SUPPORTER PAGE ============
 function showSupporterPage() {
@@ -678,7 +992,7 @@ function showSupporterPage() {
       </ul>
     </div>
     <div class="button-group">
-      <button id="btn-back">🔙 กลับ</button>
+      <button id="btn-back"> กลับ</button>
     </div>
   `;
 
@@ -700,34 +1014,30 @@ const cardsPerPage = 4; // แสดง 4 ใบต่อหน้า
 // ... โค้ดที่มีอยู่แล้ว ...
 
 // ============ COLLECTION PAGE ============
-function showCollectionPage() {
+function showCardCollectionPage() {
   trackPageView('/collection', 'Card Collection');
 
   const root = document.getElementById("spa-root");
   const playerData = loadPlayerData();
   const collected = playerData ? playerData.collectedCards : [];
 
-  // คำนวณจำนวนหน้าทั้งหมด
   const totalPages = Math.ceil(collected.length / cardsPerPage);
   
-  // ตรวจสอบให้แน่ใจว่า currentPage ไม่เกินขอบเขต
   if (currentPage > totalPages && totalPages > 0) {
       currentPage = totalPages;
   } else if (totalPages === 0) {
       currentPage = 1;
   }
 
-  // ดึงการ์ดสำหรับหน้าปัจจุบัน
   const startIndex = (currentPage - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
   const cardsToShow = collected.slice(startIndex, endIndex);
 
   let collectionGridHtml = '';
-  if (cardsToShow.length === 0) { // เปลี่ยนจาก collected.length === 0 เป็น cardsToShow.length === 0
+  if (cardsToShow.length === 0) {
     collectionGridHtml = `<p class="empty-collection-text">ยังไม่มีการ์ดในคอลเลคชัน<br>ลองเปิดไพ่รายวันเพื่อเริ่มสะสมสิ!</p>`;
   } else {
-    // สร้างการ์ดแต่ละใบในคอลเลคชันสำหรับหน้าปัจจุบัน
-    collectionGridHtml = cardsToShow.map(cardName => { // เปลี่ยนจาก collected.map เป็น cardsToShow.map
+    collectionGridHtml = cardsToShow.map(cardName => {
       const cardData = cards.find(c => c.name === cardName);
       if (!cardData) return '';
       return `
@@ -747,60 +1057,49 @@ function showCollectionPage() {
         ${collectionGridHtml}
       </div>
        <div class="pagination-controls" ${totalPages <= 1 ? 'style="display: none;"' : ''}>
-        <button id="prev-page-btn" ${currentPage === 1 ? 'disabled style="display: none;"' : ''}>&lt; หน้าก่อนหน้า</button>
+        <button id="prev-page-btn" class="${currentPage === 1 ? 'hidden' : ''}">กลับ</button>
         <span class="page-info">หน้า ${currentPage} / ${totalPages > 0 ? totalPages : 1}</span>
-        <button id="next-page-btn" ${currentPage === totalPages || totalPages === 0 ? 'disabled style="display: none;"' : ''}>หน้าถัดไป &gt;</button>
+        <button id="next-page-btn" class="${currentPage === totalPages || totalPages === 0 ? 'hidden' : ''}">ถัดไป</button>
       </div>
     </div>
     <div class="button-group">
-      <button id="btn-back">🔙 กลับ</button>
+      <button id="btn-back"> กลับ</button>
     </div>
   `;
 
   setTimeout(() => {
-    // Event listener สำหรับปุ่มกลับ
     document.getElementById("btn-back").onclick = () => {
-      sfxPop.currentTime = 0;
       sfxPop.play();
-      playSlideTransition(showHome);
+      playSlideTransition(showCollectionHubPage);
     };
 
-    // Event listeners สำหรับปุ่ม Pagination
-     const prevBtn = document.getElementById("prev-page-btn");
+    const prevBtn = document.getElementById("prev-page-btn");
     const nextBtn = document.getElementById("next-page-btn");
 
-    if (prevBtn) { // ตรวจสอบว่าปุ่มมีอยู่จริงก่อนเพิ่ม event listener
+    if (prevBtn) {
         prevBtn.onclick = () => {
             if (currentPage > 1) {
-                sfxPop.currentTime = 0;
-                sfxPop.play();
                 currentPage--;
-                showCollectionPage(); // ไม่ใช้ playSlideTransition ที่นี่
+                sfxPop.play();
+                showCardCollectionPage();
             }
         };
     }
 
-    if (nextBtn) { // ตรวจสอบว่าปุ่มมีอยู่จริงก่อนเพิ่ม event listener
+    if (nextBtn) {
         nextBtn.onclick = () => {
             if (currentPage < totalPages) {
-                sfxPop.currentTime = 0;
-                sfxPop.play();
                 currentPage++;
-                showCollectionPage(); // ไม่ใช้ playSlideTransition ที่นี่
+                sfxPop.play();
+                showCardCollectionPage();
             }
         };
     }
 
-
-    // Event listener สำหรับการ์ดแต่ละใบ (ไม่มีการเปลี่ยนแปลง)
     document.querySelector('.collection-grid').addEventListener('click', (event) => {
       const cardElement = event.target.closest('.collection-card');
       if (cardElement) {
-        // --- เพิ่มโค้ดเล่นเสียงตรงนี้ ---
-        sfxPop.currentTime = 0;
         sfxPop.play();
-        // -----------------------------
-
         const cardName = cardElement.dataset.cardName;
         const cardData = cards.find(c => c.name === cardName);
         if (cardData) {
@@ -896,20 +1195,32 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
 
-        if (btnNextDay) {
+         if (btnNextDay) {
             btnNextDay.onclick = () => {
-                const pd = JSON.parse(localStorage.getItem("playerData"));
+                let pd = loadPlayerData(); // ใช้ฟังก์ชัน loadPlayerData() เพื่อความแน่นอน
                 if (pd) {
-                    // [แก้ไข] ตั้งวันที่สุ่มล่าสุดให้เป็นเมื่อวานตามเวลาท้องถิ่น
                     const yesterday = new Date();
                     yesterday.setDate(yesterday.getDate() - 1);
                     const y_year = yesterday.getFullYear();
                     const y_month = String(yesterday.getMonth() + 1).padStart(2, '0');
                     const y_day = String(yesterday.getDate()).padStart(2, '0');
-                    pd.lastCardDrawDate = `${y_year}-${y_month}-${y_day}`;
+                    const yesterdayString = `${y_year}-${y_month}-${y_day}`;
+
+                    // --- ส่วนที่แก้ไข ---
+                    // 1. อัปเดตวันที่ของ "การ์ดรายวัน"
+                    pd.lastCardDrawDate = yesterdayString; 
                     
-                    localStorage.setItem("playerData", JSON.stringify(pd));
-                    alert("จำลองเป็นวันถัดไปสำเร็จ! คุณสามารถสุ่มไพ่ใหม่ได้เลย");
+                    // 2. อัปเดตวันที่ของ "คำถามรายวัน" ทั้งหมด
+                    if (pd.todaysQuestion) {
+                        pd.todaysQuestion.date = yesterdayString;
+                    }
+                    if (pd.lastQuestionAnsweredDate) {
+                        pd.lastQuestionAnsweredDate = yesterdayString;
+                    }
+                    // --- สิ้นสุดส่วนที่แก้ไข ---
+                    
+                    savePlayerData(pd); // ใช้ฟังก์ชัน savePlayerData()
+                    alert("จำลองเป็นวันถัดไปสำเร็จ! คุณสามารถสุ่มไพ่และตอบคำถามใหม่ได้เลย");
                     location.reload();
                 }
             };
