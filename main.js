@@ -52,7 +52,7 @@ function checkForUpdates() {
 
 async function showUpdateNotification() {
     try {
-        const response = await fetch('/update-info.json' + new Date().getTime());
+        const response = await fetch('/update-info.json?v=' + new Date().getTime());
         const data = await response.json();
         const { version, notes } = data;
         const notificationContainer = document.createElement('div');
@@ -90,10 +90,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 
 // -- Sound Preloads --
-const sfxPop = new Audio("sound/pop.MP3");
-const sfxSwipe = new Audio("sound/Swipe-card.MP3");
-const sfxCollect = new Audio("sound/collect.MP3"); 
-const sfxProgressBar = new Audio("sound/progress-bar.MP3"); 
+const sfxPop = new Audio("sound/pop.MP3?v=70");
+const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=70");
+const sfxCollect = new Audio("sound/collect.MP3?v=70"); 
+const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=70"); 
 
 // ============ Data: ไพ่ทั้งหมด =============
 const cards = [
@@ -806,7 +806,7 @@ function showDailyQuestionPage() {
   const answeredIndexes = playerData.answeredIndexes || [];
   const today = new Date().toLocaleDateString('en-CA');
 
-  fetch('questions.json' + new Date().getTime())
+  fetch('questions.json?v=' + new Date().getTime())
     .then(response => response.json())
     .then(questions => {
       let randomIndex;
