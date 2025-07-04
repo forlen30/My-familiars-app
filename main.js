@@ -87,10 +87,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 
 // -- Sound Preloads --
-const sfxPop = new Audio("sound/pop.MP3?v=62");
-const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=62");
-const sfxCollect = new Audio("sound/collect.MP3?v=62"); 
-const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=62"); 
+const sfxPop = new Audio("sound/pop.MP3?v=66");
+const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=66");
+const sfxCollect = new Audio("sound/collect.MP3?v=66"); 
+const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=66"); 
 
 // ============ Data: ไพ่ทั้งหมด =============
 const cards = [
@@ -355,7 +355,7 @@ function showHome(triggerCollectionAnimation = false) {
       <div class="daily-question-box">
       ${newBadgeHtml} 
       <h1>ภารกิจคำถามรายวัน</h1>
-      <button class="button" id="btn-daily-question">คลิกเพื่อตอบคำถาม</button>
+      <p>คุณรู้เรื่องเวทมนตร์ดีแค่ไหน? มาทดสอบกัน!</p> <button class="button" id="btn-daily-question">คลิกเพื่อตอบคำถาม</button>
       <img src="images/question-icon.png" class="question-icon" alt="คำถามรายวัน" />
     </div>
     <div class="encyclopedia-box menu-box clickable-box" onclick="return false;" tabindex="0">
@@ -737,7 +737,7 @@ if (shareButton) {
         if (!cardToShare) return alert("ไม่พบข้อมูลการ์ดที่จะแชร์ครับ");
 
         // **** แก้ไข URL ตรงนี้ให้เป็น URL ของเว็บ V2 คุณ ****
-        const appUrl = 'https://my-familiars-v2.netlify.app'; 
+        const appUrl = 'https://my-familiars.netlify.app'; 
         
         // สร้าง URL สำหรับแชร์ที่มีชื่อการ์ดต่อท้าย
         const cardShareUrl = `${appUrl}/.netlify/functions/share-card?name=${encodeURIComponent(cardToShare.name)}`;

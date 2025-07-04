@@ -60,7 +60,7 @@ exports.handler = async function(event, context) {
   try {
     const cardName = decodeURIComponent(event.queryStringParameters.name || "Default");
     const card = cards.find(c => c.name.toLowerCase() === cardName.toLowerCase());
-    const siteUrl = "https://my-familiars-v2.netlify.app"; 
+    const siteUrl = "https://my-familiars.netlify.app"; 
     const pageTitle = card ? `${card.name} | My Familiars` : "My Familiars";
     const pageDescription = card ? card.message : "สุ่มไพ่พยากรณ์ประจำวันของคุณ";
     const imageUrl = card ? `${siteUrl}/${card.image}` : `${siteUrl}/images/icon-512.png`;
