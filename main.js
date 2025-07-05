@@ -1,9 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
-// วาง Config ที่คัดลอกมาจากหน้าเว็บ Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyB-pwqwWI8c9BKWDGcqFWGOjv06rryWap8", 
+  apiKey: "AIzaSyB-pwqwWI8c9BKWDGcqFWGOjv06rryWap8", // <-- ใส่ Key ของคุณ
   authDomain: "my-familiars.firebaseapp.com",
   projectId: "my-familiars",
   storageBucket: "my-familiars.firebasestorage.app",
@@ -12,16 +11,25 @@ const firebaseConfig = {
   measurementId: "G-LGMMQ2THWP"
 };
 
+const firebaseApp = initializeApp(firebaseConfig);
+const messaging = getMessaging(firebaseApp);
+console.log("Firebase initialized successfully!");
+
+// -- Supabase Client Setup --
+const { createClient } = supabase; // <-- บรรทัดนี้ตอนนี้จะทำงานได้แล้ว เพราะเรา Import มาใน index.html
+const SUPABASE_URL = 'https://zrllfifabegzzoeelqpp.supabase.co'; // <-- ใส่ URL ของคุณ
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpybGxmaWZhYmVnenpvZWVscXBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExMTY3NDQsImV4cCI6MjA2NjY5Mjc0NH0.aEveB1EPedeV4_30CqKls0HiTGr2dGx85kSgxk-mr8s'; // <-- ใส่ Key ของคุณ
+
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
 function requestNotificationPermission() {
     console.log('Requesting notification permission...');
     Notification.requestPermission().then((permission) => {
         if (permission === 'granted') {
             console.log('Notification permission granted.');
             
-            // --- ส่วนสำคัญ: รับ Token ---
-            // ใส่ VAPID Key ของคุณที่คัดลอกมาจาก Firebase Console ตรงนี้
-            const vapidKey = 'BD3BJcTpsPYzPfO1xAu2jNtpbtwY2R_jDOLDFgj7MEAdoc-d37zhvKuLKxa0EKPKtPfrXrWzaQX00N8UIe9LZsU';
-
+            const vapidKey = 'BD3BJcTpsPYzPfO1xAu2jNtpbtwY2R_jDOLDFgj7MEAdoc-d37zhvKuLKxa0EKPKtPfrXrWzaQX00N8UIe9LZsU'; // <-- ใส่ VAPID Key ของคุณ
             getToken(messaging, { vapidKey: vapidKey }).then((currentToken) => {
                 if (currentToken) {
                     console.log('FCM Token:', currentToken);
@@ -33,28 +41,16 @@ function requestNotificationPermission() {
             }).catch((err) => {
                 console.log('An error occurred while retrieving token. ', err);
             });
-            // --- จบส่วนสำคัญ ---
-
         } else {
             console.log('ไม่สามารถขออนุญาตส่งแจ้งเตือนได้');
         }
     });
 }
 
-// เริ่มการเชื่อมต่อกับ Firebase
-const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app); 
-console.log("Firebase has been initialized!");
 
-requestNotificationPermission(); 
+// --- Initial Call for Testing ---
+requestNotificationPermission();
 
-// -- Supabase Client Setup --
-const { createClient } = supabase; // <-- บรรทัดนี้ตอนนี้จะทำงานได้แล้ว เพราะเรา Import มาใน index.html
-const SUPABASE_URL = 'https://zrllfifabegzzoeelqpp.supabase.co'; // <-- ใส่ URL ของคุณ
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpybGxmaWZhYmVnenpvZWVscXBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExMTY3NDQsImV4cCI6MjA2NjY5Mjc0NH0.aEveB1EPedeV4_30CqKls0HiTGr2dGx85kSgxk-mr8s'; // <-- ใส่ Key ของคุณ
-
-// เราจะใช้ตัวแปร supabaseClient ในการทำงานทั้งหมด เพื่อไม่ให้สับสนกับตัวแปร supabase หลัก
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // =======================================
 //   ระบบแจ้งเตือนอัปเดต
