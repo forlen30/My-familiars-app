@@ -50,6 +50,45 @@ function checkForUpdates() {
     }
 }
 
+window.OneSignal = window.OneSignal || [];
+OneSignal.push(function() {
+  OneSignal.init({
+    appId: "68a7a06b-4814-4d41-987a-f14c5631c5d5", // App ID ของคุณ
+    safari_web_id: "",
+    notifyButton: {
+      enable: true,
+    },
+    allowLocalhostAsSecureOrigin: true,
+    // บอกให้ OneSignal ใช้ Service Worker ของเราไฟล์นี้
+    serviceWorkerPath: "sw.js" 
+  });
+
+  // --- นี่คือส่วนที่แก้ไขปัญหา ---
+  // ให้ OneSignal จัดการ registration ให้ เราแค่รอฟังผล
+  navigator.serviceWorker.ready.then(function(registration) {
+    // ดักฟังเมื่อมีอัปเดตใหม่ถูกติดตั้งและกำลังรอทำงาน
+    registration.addEventListener('updatefound', () => {
+      const newWorker = registration.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          waitingWorker = newWorker;
+          // ถ้าเจอ worker ใหม่ที่รออยู่ ก็เรียกใช้ฟังก์ชันแสดง Pop-up ของเรา
+          showUpdateNotification(); 
+        }
+      });
+    });
+  });
+  
+  // โค้ดสำหรับรีโหลดหน้ายังคงต้องมีอยู่เหมือนเดิม
+  let refreshing;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing) return;
+    sessionStorage.setItem('isUpdating', 'true'); // ใช้ sessionStorage เพื่อความแน่นอน
+    window.location.reload();
+    refreshing = true;
+  });
+});
+
 async function showUpdateNotification() {
     try {
         const response = await fetch('/update-info.json?v=' + new Date().getTime());
@@ -90,10 +129,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 
 // -- Sound Preloads --
-const sfxPop = new Audio("sound/pop.MP3?v=73");
-const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=73");
-const sfxCollect = new Audio("sound/collect.MP3?v=73"); 
-const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=73"); 
+const sfxPop = new Audio("sound/pop.MP3?v=75");
+const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=75");
+const sfxCollect = new Audio("sound/collect.MP3?v=75"); 
+const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=75"); 
 
 // ============ Data: ไพ่ทั้งหมด =============
 const cards = [
