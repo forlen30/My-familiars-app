@@ -275,7 +275,7 @@ function getExpProgress(exp) {
 
 
 // ฟังก์ชันเริ่มต้นแอปทั้งหมด
-function initializeApp() {
+function startApp() {
     const playerData = loadPlayerData();
     if (playerData) {
         showHome();
@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.target.blur();
       }
     });
-    initializeApp();
+    startApp();
 });
 
 function playSlideTransition(cb) {
