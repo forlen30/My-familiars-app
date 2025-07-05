@@ -1,6 +1,6 @@
 importScripts('https://cdn.onesignal.com/sdks/OneSignalSDKWorker.js');
 
-const CACHE_NAME = 'My-Familiars-FINAL-FIX-V1'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
+const CACHE_NAME = 'My-Familiars-v71'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
 
 const ASSETS = [
   '/',
@@ -81,7 +81,6 @@ const ASSETS = [
   '/images/back-button.png',
   '/images/cursor.png',
   '/images/egg.png',
-  '/images/snake-share.png',
   'https://fonts.googleapis.com/css2?family=Itim&display=swap'
 ];
 
