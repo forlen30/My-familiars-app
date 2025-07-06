@@ -1,4 +1,4 @@
-const CACHE_NAME = 'My-Familiars-v79'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
+const CACHE_NAME = 'My-Familiars-v80'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
 
 const ASSETS = [
   '/',

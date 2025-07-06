@@ -23,24 +23,43 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
-function requestNotificationPermission() {
+async function requestNotificationPermission() {
     console.log('Requesting notification permission...');
-    Notification.requestPermission().then((permission) => {
+    
+    // The callback for .then() also needs to be async
+    Notification.requestPermission().then(async (permission) => {
         if (permission === 'granted') {
             console.log('Notification permission granted.');
             
-            const vapidKey = 'BD3BJcTpsPYzPfO1xAu2jNtpbtwY2R_jDOLDFgj7MEAdoc-d37zhvKuLKxa0EKPKtPfrXrWzaQX00N8UIe9LZsU'; // <-- ใส่ VAPID Key ของคุณ
-            getToken(messaging, { vapidKey: vapidKey }).then((currentToken) => {
+            const vapidKey = 'BD3BJcTpsPYzPfO1xAu2jNtpbtwY2R_jDOLDFgj7MEAdoc-d37zhvKuLKxa0EKPKtPfrXrWzaQX00N8UIe9LZsU';
+            
+            try {
+                const currentToken = await getToken(messaging, { vapidKey: vapidKey });
+
                 if (currentToken) {
                     console.log('FCM Token:', currentToken);
-                    // ในอนาคต เราจะส่ง Token นี้ไปเก็บที่ Server
-                    alert('ได้รับอนุญาตให้ส่งแจ้งเตือนแล้ว!');
+
+                    // --- นี่คือโค้ดส่วนที่ขาดไป ---
+                    // บันทึก Token ลง Supabase โดยใช้ upsert เพื่อไม่ให้ซ้ำ
+                    const { data, error } = await supabaseClient
+                        .from('fcm_tokens')
+                        .upsert({ token: currentToken }); // บันทึกแค่ token
+
+                    if (error) {
+                        console.error('Error saving FCM token:', error);
+                        alert('ได้รับอนุญาตแต่บันทึก Token ไม่สำเร็จ');
+                    } else {
+                        console.log('FCM token saved successfully!', data);
+                        alert('ได้รับอนุญาตและบันทึกข้อมูลเรียบร้อย!');
+                    }
+                    // --- จบส่วนที่ขาดไป ---
+
                 } else {
                     console.log('ไม่สามารถรับ Token ได้ โปรดขออนุญาตก่อน');
                 }
-            }).catch((err) => {
+            } catch (err) {
                 console.log('An error occurred while retrieving token. ', err);
-            });
+            }
         } else {
             console.log('ไม่สามารถขออนุญาตส่งแจ้งเตือนได้');
         }
