@@ -24,46 +24,54 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
 async function requestNotificationPermission() {
-    console.log('Requesting notification permission...');
-    
-    // The callback for .then() also needs to be async
-    Notification.requestPermission().then(async (permission) => {
-        if (permission === 'granted') {
-            console.log('Notification permission granted.');
+    // --- ส่วนที่แก้ไขปัญหา "เด้งถามซ้ำ" ---
+    // 1. เช็คสถานะการอนุญาตปัจจุบันก่อน
+    if (Notification.permission !== 'granted') {
+        // 2. ถ้ายังไม่เคยอนุญาต ถึงจะเด้งถาม
+        console.log('Requesting notification permission...');
+        await Notification.requestPermission();
+    }
+    // --- จบส่วนแก้ไข ---
+
+    // 3. ถ้าสถานะล่าสุดคือ 'granted' (ไม่ว่าจะเพิ่งกด หรือเคยกดไปแล้ว) ให้ไปรับ Token
+    if (Notification.permission === 'granted') {
+        console.log('Notification permission is granted. Getting token...');
+        
+        const vapidKey = 'BD3BJcTpsPYzPfO1xAu2jNtpbtwY2R_jDOLDFgj7MEAdoc-d37zhvKuLKxa0EKPKtPfrXrWzaQX00N8UIe9LZsU'; // Key เดิมของคุณ
+        
+        try {
+            const currentToken = await getToken(messaging, { vapidKey: vapidKey });
+            let playerData = loadPlayerData() || {};
             
-            const vapidKey = 'BD3BJcTpsPYzPfO1xAu2jNtpbtwY2R_jDOLDFgj7MEAdoc-d37zhvKuLKxa0EKPKtPfrXrWzaQX00N8UIe9LZsU';
-            
-            try {
-                const currentToken = await getToken(messaging, { vapidKey: vapidKey });
+            // --- ส่วนที่แก้ไขปัญหา "Token ซ้ำซ้อน" ---
+            // 4. เช็คว่า Token ที่ได้มาใหม่ ไม่ซ้ำกับที่เคยบันทึกไว้
+            if (currentToken && currentToken !== playerData.lastFCMToken) {
+                console.log('New or updated FCM Token found:', currentToken);
 
-                if (currentToken) {
-                    console.log('FCM Token:', currentToken);
+                // 5. บันทึก Token ใหม่ลง Supabase และ localStorage
+                const { error } = await supabaseClient
+                    .from('fcm_tokens')
+                    .upsert({ token: currentToken });
 
-                    // --- นี่คือโค้ดส่วนที่ขาดไป ---
-                    // บันทึก Token ลง Supabase โดยใช้ upsert เพื่อไม่ให้ซ้ำ
-                    const { data, error } = await supabaseClient
-                        .from('fcm_tokens')
-                        .upsert({ token: currentToken }); // บันทึกแค่ token
-
-                    if (error) {
-                        console.error('Error saving FCM token:', error);
-                        alert('ได้รับอนุญาตแต่บันทึก Token ไม่สำเร็จ');
-                    } else {
-                        console.log('FCM token saved successfully!', data);
-                        alert('ได้รับอนุญาตและบันทึกข้อมูลเรียบร้อย!');
-                    }
-                    // --- จบส่วนที่ขาดไป ---
-
+                if (error) {
+                    console.error('Error saving FCM token:', error);
                 } else {
-                    console.log('ไม่สามารถรับ Token ได้ โปรดขออนุญาตก่อน');
+                    console.log('FCM token saved successfully!');
+                    playerData.lastFCMToken = currentToken;
+                    savePlayerData(playerData);
+                    alert('เปิดรับการแจ้งเตือนเรียบร้อยแล้ว!');
                 }
-            } catch (err) {
-                console.log('An error occurred while retrieving token. ', err);
+            } else if (currentToken) {
+                console.log('FCM Token is already up to date.');
             }
-        } else {
-            console.log('ไม่สามารถขออนุญาตส่งแจ้งเตือนได้');
+            // --- จบส่วนแก้ไข ---
+
+        } catch (err) {
+            console.log('An error occurred while retrieving token. ', err);
         }
-    });
+    } else {
+        console.log('Unable to get permission to notify.');
+    }
 }
 
 
