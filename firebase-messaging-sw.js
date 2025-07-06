@@ -32,7 +32,8 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: '/images/icon-192.png' // <-- ไอคอนของแอปคุณ
+    icon: '/images/icon-192.png',
+    tag: 'my-familiars-notification'
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
