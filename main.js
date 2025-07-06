@@ -1,83 +1,9 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB-pwqwWI8c9BKWDGcqFWGOjv06rryWap8", // <-- ใส่ Key ของคุณ
-  authDomain: "my-familiars.firebaseapp.com",
-  projectId: "my-familiars",
-  storageBucket: "my-familiars.firebasestorage.app",
-  messagingSenderId: "644836742671",
-  appId: "1:644836742671:web:2109ef8cb711d653d2b57a",
-  measurementId: "G-LGMMQ2THWP"
-};
-
-const firebaseApp = initializeApp(firebaseConfig);
-const messaging = getMessaging(firebaseApp);
-console.log("Firebase initialized successfully!");
-
 // -- Supabase Client Setup --
 const { createClient } = supabase; // <-- บรรทัดนี้ตอนนี้จะทำงานได้แล้ว เพราะเรา Import มาใน index.html
 const SUPABASE_URL = 'https://zrllfifabegzzoeelqpp.supabase.co'; // <-- ใส่ URL ของคุณ
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpybGxmaWZhYmVnenpvZWVscXBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExMTY3NDQsImV4cCI6MjA2NjY5Mjc0NH0.aEveB1EPedeV4_30CqKls0HiTGr2dGx85kSgxk-mr8s'; // <-- ใส่ Key ของคุณ
 
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-
-async function requestNotificationPermission() {
-    // --- ส่วนที่แก้ไขปัญหา "เด้งถามซ้ำ" ---
-    // 1. เช็คสถานะการอนุญาตปัจจุบันก่อน
-    if (Notification.permission !== 'granted') {
-        // 2. ถ้ายังไม่เคยอนุญาต ถึงจะเด้งถาม
-        console.log('Requesting notification permission...');
-        await Notification.requestPermission();
-    }
-    // --- จบส่วนแก้ไข ---
-
-    // 3. ถ้าสถานะล่าสุดคือ 'granted' (ไม่ว่าจะเพิ่งกด หรือเคยกดไปแล้ว) ให้ไปรับ Token
-    if (Notification.permission === 'granted') {
-        console.log('Notification permission is granted. Getting token...');
-        
-        const vapidKey = 'BD3BJcTpsPYzPfO1xAu2jNtpbtwY2R_jDOLDFgj7MEAdoc-d37zhvKuLKxa0EKPKtPfrXrWzaQX00N8UIe9LZsU'; // Key เดิมของคุณ
-        
-        try {
-            const currentToken = await getToken(messaging, { vapidKey: vapidKey });
-            let playerData = loadPlayerData() || {};
-            
-            // --- ส่วนที่แก้ไขปัญหา "Token ซ้ำซ้อน" ---
-            // 4. เช็คว่า Token ที่ได้มาใหม่ ไม่ซ้ำกับที่เคยบันทึกไว้
-            if (currentToken && currentToken !== playerData.lastFCMToken) {
-                console.log('New or updated FCM Token found:', currentToken);
-
-                // 5. บันทึก Token ใหม่ลง Supabase และ localStorage
-                const { error } = await supabaseClient
-                    .from('fcm_tokens')
-                    .upsert({ token: currentToken });
-
-                if (error) {
-                    console.error('Error saving FCM token:', error);
-                } else {
-                    console.log('FCM token saved successfully!');
-                    playerData.lastFCMToken = currentToken;
-                    savePlayerData(playerData);
-                    alert('เปิดรับการแจ้งเตือนเรียบร้อยแล้ว!');
-                }
-            } else if (currentToken) {
-                console.log('FCM Token is already up to date.');
-            }
-            // --- จบส่วนแก้ไข ---
-
-        } catch (err) {
-            console.log('An error occurred while retrieving token. ', err);
-        }
-    } else {
-        console.log('Unable to get permission to notify.');
-    }
-}
-
-
-// --- Initial Call for Testing ---
-requestNotificationPermission();
-
 
 // =======================================
 //   ระบบแจ้งเตือนอัปเดต
@@ -299,7 +225,7 @@ function getExpProgress(exp) {
   };
 }
 
-function startApp() {
+function initializeApp() {
     let playerData = loadPlayerData();
 
     // --- เพิ่มโค้ดป้องกันข้อมูลเก่า ---
@@ -388,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.target.blur();
       }
     });
-    startApp();
+    initializeApp();
 });
 
 function playSlideTransition(cb) {
