@@ -272,11 +272,35 @@ function getExpProgress(exp) {
   };
 }
 
-
-
-// ฟังก์ชันเริ่มต้นแอปทั้งหมด
 function startApp() {
-    const playerData = loadPlayerData();
+    let playerData = loadPlayerData();
+
+    // --- เพิ่มโค้ดป้องกันข้อมูลเก่า ---
+    if (playerData) { // ถ้ามีข้อมูลอยู่ (ไม่ว่าเก่าหรือใหม่)
+        let needsSave = false; // สร้างธงเพื่อเช็คว่าต้องเซฟใหม่หรือไม่
+
+        // ตรวจสอบ key 'answeredQuestions' ที่เพิ่มใน V2
+        if (playerData.answeredQuestions === undefined) {
+            console.log("Migrating data: adding 'answeredQuestions'");
+            playerData.answeredQuestions = []; // ถ้าไม่มี ให้สร้างขึ้นมาเป็น array ว่าง
+            needsSave = true;
+        }
+        
+        // ตรวจสอบ key 'hasSeenDailyQuestion' ที่เพิ่มใน V2
+        if (playerData.hasSeenDailyQuestion === undefined) {
+            console.log("Migrating data: adding 'hasSeenDailyQuestion'");
+            playerData.hasSeenDailyQuestion = false; // ถ้าไม่มี ให้สร้างขึ้นมาเป็น false
+            needsSave = true;
+        }
+        
+        // ถ้ามีการเปลี่ยนแปลง ให้เซฟข้อมูลโครงสร้างใหม่แค่ครั้งเดียว
+        if (needsSave) {
+            savePlayerData(playerData);
+        }
+    }
+    // --- จบส่วนป้องกัน ---
+
+    // โค้ดที่เหลือทำงานตามปกติ
     if (playerData) {
         showHome();
     } else {
