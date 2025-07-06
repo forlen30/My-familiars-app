@@ -1,10 +1,8 @@
-// ไฟล์: firebase-messaging-sw.js
+// ไฟล์: firebase-messaging-sw.js (ฉบับแก้ไขสมบูรณ์)
 
-// Import สคริปต์ของ Firebase สำหรับ Service Worker
 importScripts("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js");
 
-// วาง Config เดียวกันกับใน main.js
 const firebaseConfig = {
   apiKey: "AIzaSyB-pwqwWI8c9BKWDGcqFWGOjv06rryWap8",
   authDomain: "my-familiars.firebaseapp.com",
@@ -15,26 +13,32 @@ const firebaseConfig = {
   measurementId: "G-LGMMQ2THWP"
 };
 
-// เริ่มการเชื่อมต่อ Firebase
 firebase.initializeApp(firebaseConfig);
-
-// รับ instance ของ Messaging
 const messaging = firebase.messaging();
 
-// เพิ่ม Event Listener เพื่อจัดการกับ Notification ที่เข้ามาตอนแอปอยู่เบื้องหลัง
-messaging.onBackgroundMessage((payload) => {
-  console.log(
-    "[firebase-messaging-sw.js] Received background message ",
-    payload
-  );
+messaging.onBackgroundMessage(async (payload) => {
+  console.log("[SW] Received background message ", payload);
 
-  // กำหนดหน้าตาของ Notification ที่จะแสดง
+  // --- ส่วนที่แก้ไขปัญหา ---
+  // 1. ตรวจสอบ Notification ที่มีอยู่ทั้งหมด
+  const existingNotifications = await self.registration.getNotifications({
+    tag: 'my-familiars-notification' // เช็คจาก tag ที่เราจะตั้ง
+  });
+
+  // 2. ถ้ามี Notification ที่ใช้ tag นี้แสดงอยู่แล้ว ให้ปิดอันเก่าก่อน
+  if (existingNotifications.length > 0) {
+    console.log("[SW] Closing existing notifications.");
+    existingNotifications.forEach(notification => notification.close());
+  }
+  // --- สิ้นสุดส่วนที่แก้ไข ---
+
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
     icon: '/images/icon-192.png',
-    tag: 'my-familiars-notification'
+    tag: 'my-familiars-notification' // กำหนด tag ให้กับ Notification
   };
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  // แสดง Notification ใหม่
+  await self.registration.showNotification(notificationTitle, notificationOptions);
 });
