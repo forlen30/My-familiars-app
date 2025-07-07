@@ -1177,10 +1177,12 @@ function showCardDetailModal(card) {
   };
 }
 
+// ฟังก์ชันสำหรับแสดงหน้าตั้งค่า (ฉบับแก้ไข - ไม่มี Facebook)
 function showSettingsPage() {
     trackPageView('/settings', 'Settings Page');
     const root = document.getElementById("spa-root");
     
+    // ลบ HTML ของปุ่ม Facebook ออกไป
     root.innerHTML = `
         <div class="window">
             <h1>ตั้งค่าบัญชี</h1>
@@ -1191,14 +1193,10 @@ function showSettingsPage() {
                     <img src="/images/google-icon.png" alt="Google">
                     <span>ผูกบัญชีกับ Google</span>
                 </button>
-                <button id="link-facebook-btn" class="social-btn facebook">
-                    <img src="/images/facebook-icon.png" alt="Facebook">
-                    <span>ผูกบัญชีกับ Facebook</span>
-                </button>
             </div>
         </div>
         <div class="button-group">
-            <button id="btn-back">กลับ</button>
+            <button id="btn-back">🔙 กลับ</button>
         </div>
     `;
 
@@ -1208,27 +1206,27 @@ function showSettingsPage() {
             playSlideTransition(showHome); 
         };
 
-         const linkGoogleBtn = document.getElementById('link-google-btn');
-        const linkFacebookBtn = document.getElementById('link-facebook-btn');
+        // --- แก้ไขโค้ดส่วนนี้ ---
+        const linkGoogleBtn = document.getElementById('link-google-btn');
 
-         linkGoogleBtn.onclick = async () => {
-        sfxPop.play();
-        const { error } = await supabaseClient.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: window.location.origin // ให้กลับมาที่หน้าเว็บเดิมหลัง Login
+        // ปุ่มผูกบัญชีกับ Google
+        linkGoogleBtn.onclick = async () => {
+            sfxPop.play();
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.origin
+                }
+            });
+            if (error) {
+                console.error('Error signing in with Google:', error);
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อกับ Google');
             }
-        });
-        if (error) {
-            console.error('Error signing in with Google:', error);
-            alert('เกิดข้อผิดพลาดในการเชื่อมต่อกับ Google');
-        }
-    };
+        };
 
-    linkFacebookBtn.onclick = () => {
-        alert("การเชื่อมต่อกับ Facebook ยังไม่เปิดให้บริการค่ะ");
-    };
-       
+        // ลบโค้ดของปุ่ม Facebook ทิ้งไปทั้งหมด
+        // --- จบส่วนแก้ไข ---
+        
     }, 50);
 }
 
