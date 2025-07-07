@@ -362,6 +362,9 @@ function showHome(triggerCollectionAnimation = false) {
 
     root.innerHTML = `
      <div class="player-profile-box">
+      <button id="setting-btn" class="setting-icon-btn">
+    <img src="/images/setting-icon.png" alt="ตั้งค่า" />
+  </button>
       <div id="player-rank-container">
         <div class="player-rank-title">Ranking : ${playerData.rank}</div>
       </div>
@@ -414,6 +417,10 @@ function showHome(triggerCollectionAnimation = false) {
     document.getElementById("supporter-box").onclick = () => { sfxPop.play(); playSlideTransition(showSupporterPage); };
     const collectionButton = document.getElementById("collection-button");
     collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionHubPage); };
+    document.getElementById("setting-btn").onclick = () => { 
+    sfxPop.play(); 
+    playSlideTransition(showSettingsPage); 
+};
 
      // --- เพิ่ม Logic ใหม่สำหรับ Light Sweep เข้ามาตรงนี้ ---
         if (!playerData.hasSeenDailyQuestion) {
@@ -1168,6 +1175,61 @@ function showCardDetailModal(card) {
       closeModal();
     }
   };
+}
+
+function showSettingsPage() {
+    trackPageView('/settings', 'Settings Page');
+    const root = document.getElementById("spa-root");
+    
+    root.innerHTML = `
+        <div class="window">
+            <h1>ตั้งค่าบัญชี</h1>
+            <p>เชื่อมต่อบัญชีของคุณเพื่อสำรองข้อมูลและเล่นได้จากหลายอุปกรณ์</p>
+            
+            <div class="account-linking-options">
+                <button id="link-google-btn" class="social-btn google">
+                    <img src="/images/google-icon.png" alt="Google">
+                    <span>ผูกบัญชีกับ Google</span>
+                </button>
+                <button id="link-facebook-btn" class="social-btn facebook">
+                    <img src="/images/facebook-icon.png" alt="Facebook">
+                    <span>ผูกบัญชีกับ Facebook</span>
+                </button>
+            </div>
+        </div>
+        <div class="button-group">
+            <button id="btn-back">กลับ</button>
+        </div>
+    `;
+
+    setTimeout(() => {
+        document.getElementById("btn-back").onclick = () => { 
+            sfxPop.play(); 
+            playSlideTransition(showHome); 
+        };
+
+         const linkGoogleBtn = document.getElementById('link-google-btn');
+        const linkFacebookBtn = document.getElementById('link-facebook-btn');
+
+         linkGoogleBtn.onclick = async () => {
+        sfxPop.play();
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin // ให้กลับมาที่หน้าเว็บเดิมหลัง Login
+            }
+        });
+        if (error) {
+            console.error('Error signing in with Google:', error);
+            alert('เกิดข้อผิดพลาดในการเชื่อมต่อกับ Google');
+        }
+    };
+
+    linkFacebookBtn.onclick = () => {
+        alert("การเชื่อมต่อกับ Facebook ยังไม่เปิดให้บริการค่ะ");
+    };
+       
+    }, 50);
 }
 
 // ฟังก์ชันสำหรับส่งข้อมูลการดูหน้าเว็บไปให้ Google Analytics โดยเฉพาะ
