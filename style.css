@@ -1290,17 +1290,34 @@ img {
   border-top: 1px dashed #d0e0f0;
 }
 
-/* --- สไตล์สำหรับปุ่มตั้งค่า --- */
+/* --- สไตล์สำหรับปุ่มตั้งค่า (ฉบับแก้ไข) --- */
 .setting-icon-btn {
+  /* กำหนดตำแหน่ง */
   position: absolute;
   top: 15px;
   right: 15px;
-  background: none;
-  border: none;
-  padding: 5px;
+  
+  /* กำหนดขนาดพื้นที่การกด (Hitbox) */
+  width: 42px; 
+  height: 42px;
+  
+  /* จัดไอคอนให้อยู่ตรงกลางเป๊ะๆ */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* ดีไซน์ */
+  background: rgba(255, 255, 255, 0.5); /* เพิ่มพื้นหลังจางๆ ให้มองเห็นง่าย */
+  border-radius: 50%; /* ทำให้เป็นวงกลม */
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 24px; /* ขนาดของไอคอนฟันเฟือง */
+  line-height: 1; /* ช่วยจัดกลางสำหรับบางเบราว์เซอร์ */
+  color: #215981; /* สีไอคอน */
   cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 0.2s, transform 0.2s;
+  opacity: 0.8;
+  
+  /* อนิเมชัน */
+  transition: all 0.2s ease-in-out;
 }
 
 .setting-icon-btn img {
@@ -1311,7 +1328,12 @@ img {
 
 .setting-icon-btn:hover {
   opacity: 1;
-  transform: scale(1.1) rotate(30deg);
+  transform: scale(1.1) rotate(45deg); /* ทำให้หมุนตอนเอาเมาส์ชี้ */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.setting-icon-btn:active {
+  transform: scale(1); /* ทำให้ปุ่มกลับขนาดเดิมตอนกด */
 }
 
 /* --- สไตล์สำหรับหน้าตั้งค่า --- */
