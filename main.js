@@ -362,9 +362,6 @@ function showHome(triggerCollectionAnimation = false) {
 
     root.innerHTML = `
      <div class="player-profile-box">
-      <button id="setting-btn" class="setting-icon-btn">
-    <img src="/images/setting-icon.png" alt="ตั้งค่า" />
-  </button>
       <div id="player-rank-container">
         <div class="player-rank-title">Ranking : ${playerData.rank}</div>
       </div>
@@ -417,10 +414,7 @@ function showHome(triggerCollectionAnimation = false) {
     document.getElementById("supporter-box").onclick = () => { sfxPop.play(); playSlideTransition(showSupporterPage); };
     const collectionButton = document.getElementById("collection-button");
     collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionHubPage); };
-    document.getElementById("setting-btn").onclick = () => { 
-    sfxPop.play(); 
-    playSlideTransition(showSettingsPage); 
-};
+    
 
      // --- เพิ่ม Logic ใหม่สำหรับ Light Sweep เข้ามาตรงนี้ ---
         if (!playerData.hasSeenDailyQuestion) {
@@ -833,7 +827,7 @@ function showDailyQuestionPage() {
   if (!root) return;
 
   let playerData = loadPlayerData();
-  const answeredIndexes = playerData.answeredIndexes || [];
+  const answeredIndexes = (playerData.answeredQuestions || []).map(q => q.index);
   const today = new Date().toLocaleDateString('en-CA');
 
   fetch('questions.json?v=' + new Date().getTime())
@@ -1175,59 +1169,6 @@ function showCardDetailModal(card) {
       closeModal();
     }
   };
-}
-
-// ฟังก์ชันสำหรับแสดงหน้าตั้งค่า (ฉบับแก้ไข - ไม่มี Facebook)
-function showSettingsPage() {
-    trackPageView('/settings', 'Settings Page');
-    const root = document.getElementById("spa-root");
-    
-    // ลบ HTML ของปุ่ม Facebook ออกไป
-    root.innerHTML = `
-        <div class="window">
-            <h1>ตั้งค่าบัญชี</h1>
-            <p>เชื่อมต่อบัญชีของคุณเพื่อสำรองข้อมูลและเล่นได้จากหลายอุปกรณ์</p>
-            
-            <div class="account-linking-options">
-                <button id="link-google-btn" class="social-btn google">
-                    <img src="/images/google-icon.png" alt="Google">
-                    <span>ผูกบัญชีกับ Google</span>
-                </button>
-            </div>
-        </div>
-        <div class="button-group">
-            <button id="btn-back">🔙 กลับ</button>
-        </div>
-    `;
-
-    setTimeout(() => {
-        document.getElementById("btn-back").onclick = () => { 
-            sfxPop.play(); 
-            playSlideTransition(showHome); 
-        };
-
-        // --- แก้ไขโค้ดส่วนนี้ ---
-        const linkGoogleBtn = document.getElementById('link-google-btn');
-
-        // ปุ่มผูกบัญชีกับ Google
-        linkGoogleBtn.onclick = async () => {
-            sfxPop.play();
-            const { error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    redirectTo: window.location.origin
-                }
-            });
-            if (error) {
-                console.error('Error signing in with Google:', error);
-                alert('เกิดข้อผิดพลาดในการเชื่อมต่อกับ Google');
-            }
-        };
-
-        // ลบโค้ดของปุ่ม Facebook ทิ้งไปทั้งหมด
-        // --- จบส่วนแก้ไข ---
-        
-    }, 50);
 }
 
 // ฟังก์ชันสำหรับส่งข้อมูลการดูหน้าเว็บไปให้ Google Analytics โดยเฉพาะ
