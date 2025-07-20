@@ -1,4 +1,4 @@
-const CACHE_NAME = 'My-Familiars-v88'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
+const CACHE_NAME = 'My-Familiars-v90'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
 
 const ASSETS = [
   '/',
@@ -12,6 +12,23 @@ const ASSETS = [
   '/images/setting-icon.png',
   '/images/google-icon.png',
   '/images/facebook-icon.png',
+  '/images/question-icon.png',
+  '/images/sun.png',
+  '/images/moon.png',
+  '/images/saturn.png',
+  '/images/venus.png',
+  '/images/jupiter.png',
+  '/images/mars.png',
+  '/images/citrus.png',
+  '/images/calendula.png',
+  '/images/rosemary.png',
+  '/images/saintjohn.png',
+  '/images/bergamot.png',
+  '/images/oregano.png',
+  '/images/garlic.png',
+  '/images/angelica_root.png',
+  '/images/cardamom.png',
+  '/images/cinnamon.png',
   '/images/question-icon.png',
   '/images/card-back.png',
   '/images/Capybara.png',

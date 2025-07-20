@@ -1,7 +1,7 @@
 // -- Supabase Client Setup --
 const { createClient } = supabase; // <-- บรรทัดนี้ตอนนี้จะทำงานได้แล้ว เพราะเรา Import มาใน index.html
-const SUPABASE_URL = 'https://zrllfifabegzzoeelqpp.supabase.co'; // <-- ใส่ URL ของคุณ
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpybGxmaWZhYmVnenpvZWVscXBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExMTY3NDQsImV4cCI6MjA2NjY5Mjc0NH0.aEveB1EPedeV4_30CqKls0HiTGr2dGx85kSgxk-mr8s'; // <-- ใส่ Key ของคุณ
+const SUPABASE_URL = window.env?.VITE_SUPABASE_URL || 'https://zrllfifabegzzoeelqpp.supabase.co';
+const SUPABASE_KEY = window.env?.VITE_SUPABASE_KEY || 'eyJhbGciOi...'; // <<< key ของจริงที่เก็บไว้ใช้ dev
 
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -89,10 +89,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 
 // -- Sound Preloads --
-const sfxPop = new Audio("sound/pop.MP3?v=76");
-const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=76");
-const sfxCollect = new Audio("sound/collect.MP3?v=76"); 
-const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=76"); 
+const sfxPop = new Audio("sound/pop.MP3?v=90");
+const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=90");
+const sfxCollect = new Audio("sound/collect.MP3?v=90"); 
+const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=90"); 
 
 // ============ Data: ไพ่ทั้งหมด =============
 const cards = [
@@ -379,16 +379,17 @@ function showHome(triggerCollectionAnimation = false) {
       <img src="images/card-in-box.png" class="card-in-box" alt="สุ่มไพ่รายวัน" />
     </div>
       <div class="daily-question-box">
-      ${newBadgeHtml} 
       <h1>ภารกิจคำถามรายวัน</h1>
       <p>คุณรู้เรื่องเวทมนตร์ดีแค่ไหน? มาทดสอบกัน!</p> <button class="button" id="btn-daily-question">คลิกเพื่อตอบคำถาม</button>
       <img src="images/question-icon.png" class="question-icon" alt="คำถามรายวัน" />
     </div>
-    <div class="encyclopedia-box menu-box clickable-box" onclick="return false;" tabindex="0">
-      <strong>สารานุกรม สมุนไพรเวท</strong><br>
-      <span style="font-size:1em;color:#8ec9ff;">Coming Soon ...</span>
-      <img src="images/leaf.png" class="herb-leaf" alt="ใบไม้" />
-    </div>
+    <div class="encyclopedia-box">
+    ${newBadgeHtml} 
+    <h1>สารานุกรม สมุนไพรเวท</h1>
+      <p>แหล่งรวมข้อมูล สมุนไพรเวทอยู่ที่นี้แล้ว!</p>
+    <button class="button" id="btn-herb">คลิกเพื่อสำรวจสมุนไพรเวท</button>
+    <img src="images/leaf.png" class="herb-leaf"/>
+      </div>
     <div class="wheel-box menu-box clickable-box" onclick="return false;" tabindex="0">
       <strong>กงล้อแห่งปี</strong><br>
       <span style="font-size:1em;color:#8ec9ff;">Coming Soon ...</span>
@@ -412,13 +413,14 @@ function showHome(triggerCollectionAnimation = false) {
     document.getElementById("btn-draw").onclick = () => { sfxPop.play(); playSlideTransition(showCardPage); };
     document.getElementById("btn-daily-question").onclick = () => { sfxPop.play(); playSlideTransition(showDailyQuestionPage); };
     document.getElementById("supporter-box").onclick = () => { sfxPop.play(); playSlideTransition(showSupporterPage); };
+    document.getElementById("btn-herb").onclick = () => { sfxPop.play(); playSlideTransition(showHerbPage); };
     const collectionButton = document.getElementById("collection-button");
     collectionButton.onclick = () => { sfxPop.play(); playSlideTransition(showCollectionHubPage); };
     
 
      // --- เพิ่ม Logic ใหม่สำหรับ Light Sweep เข้ามาตรงนี้ ---
         if (!playerData.hasSeenDailyQuestion) {
-            const questionButton = document.getElementById('btn-daily-question');
+            const questionButton = document.getElementById('btn-herb');
             if (questionButton) {
                 questionButton.classList.add('light-sweep-effect');
             }
@@ -582,11 +584,6 @@ function showCollectionHubPage() {
                         <p>ตอบแล้ว ${answeredQuestionsCount} / ${dailyQuestions.length} ข้อ</p>
                     </div>
                 </div>
-                <div class="collection-category-box" style="opacity: 0.5; cursor: default;">
-                    <img src="images/leaf.png" class="icon" alt="สารานุกรมสมุนไพร" />
-                    <div class="details">
-                        <h3>สารานุกรมสมุนไพร</h3>
-                        <p>Coming Soon...</p>
                     </div>
                 </div>
             </div>
@@ -997,6 +994,172 @@ function handleDailyAnswer(choice, question, index) {
   explanationDiv.classList.add('fade-in-explanation');
 }
 
+function showHerbPage() {
+  window.scrollTo(0, 0);
+  const root = document.getElementById("spa-root");
+  if (!root) return;
+
+  root.innerHTML = `
+    <div class="window herb-page-box">
+      <h2>สารานุกรมสมุนไพรเวท</h2>
+      <p>เลือกดวงดาวเพื่อสำรวจสมุนไพร</p>
+      <div class="herb-planet-grid">
+        <div class="herb-planet" id="btn-herb-sun"><img src="images/sun.png"><span>ดวงอาทิตย์</span></div>
+        <div class="herb-planet" id="btn-herb-moon"><img src="images/moon.png"><span>ดวงจันทร์</span></div>
+        <div class="herb-planet" id="btn-herb-mars"><img src="images/mars.png"><span>ดาวอังคาร</span></div>
+        <div class="herb-planet" id="btn-herb-mercury"><img src="images/mercury.png"><span>ดาวพุธ</span></div>
+        <div class="herb-planet" id="btn-herb-venus"><img src="images/venus.png"><span>ดาวศุกร์</span></div>
+        <div class="herb-planet" id="btn-herb-jupiter"><img src="images/jupiter.png"><span>ดาวพฤหัส</span></div>
+        <div class="herb-planet" id="btn-herb-saturn"><img src="images/saturn.png"><span>ดาวเสาร์</span></div>
+      </div>
+    </div>
+    <div class="button-group"><button id="btn-herb-back">กลับ</button></div>
+  `;
+
+  // Animation fade-up
+  setTimeout(() => {
+    const items = document.querySelectorAll('.herb-planet');
+    items.forEach((item, index) => {
+      item.style.animationDelay = `${index * 0.1}s`;
+      item.classList.add('fade-up');
+    });
+
+    // Binding click to planets
+    const availablePlanets = ['sun']; // เปิดแค่ sun
+
+    const bindPlanet = (id, planetKey, planetName) => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+
+      btn.onclick = () => {
+        sfxPop.play();
+        if (availablePlanets.includes(planetKey)) {
+          playSlideTransition(() => showHerbListPage(planetName));
+        } else {
+          // รออัปเดต
+          root.innerHTML = `
+            <div class="window fade-in">
+              <h2>ยังไม่พร้อมใช้งาน</h2>
+              <p>ข้อมูลของ <strong>${planetName}</strong> กำลังรอการอัปเดตนะคะ<br>โปรดติดตามในเวอร์ชันถัดไปค่ะ</p>
+              </div>
+               <div class="button-group">
+                <button id="btn-herb-back">กลับ</button>
+            </div>
+          `;
+          setTimeout(() => {
+            document.getElementById("btn-herb-back").onclick = () => {
+              sfxPop.play();
+              playSlideTransition(showHerbPage);
+            };
+          }, 30);
+        }
+      };
+    };
+
+    bindPlanet("btn-herb-sun", "sun", "ดวงอาทิตย์");
+    bindPlanet("btn-herb-moon", "moon", "ดวงจันทร์");
+    bindPlanet("btn-herb-mars", "mars", "ดาวอังคาร");
+    bindPlanet("btn-herb-mercury", "mercury", "ดาวพุธ");
+    bindPlanet("btn-herb-venus", "venus", "ดาวศุกร์");
+    bindPlanet("btn-herb-jupiter", "jupiter", "ดาวพฤหัส");
+    bindPlanet("btn-herb-saturn", "saturn", "ดาวเสาร์");
+
+    // ปุ่มกลับ
+    document.getElementById("btn-herb-back").onclick = () => {
+      sfxPop.play();
+      playSlideTransition(showHome);
+    };
+  }, 30);
+}
+
+
+function showHerbListPage(planetName) {
+   window.scrollTo(0, 0);
+  const root = document.getElementById("spa-root");
+  if (!root) return;
+
+  fetch('herbs.json?v=' + new Date().getTime())
+    .then(res => res.json())
+    .then(data => {
+      const planetData = data.find(entry => entry.planet === planetName);
+      if (!planetData || !planetData.herbs) {
+        root.innerHTML = `<div class="window"><h2>ไม่พบข้อมูลของ ${planetName}</h2></div>`;
+        return;
+      }
+
+      const cardsHtml = planetData.herbs.map((herb, index) => `
+        <div class="herb-card" data-index="${index}">
+          <img src="images/${herb.img}" alt="${herb.name}" class="herb-img" />
+          <div class="herb-name">${herb.name}</div>
+          <div class="herb-sci">${herb.sci}</div>
+        </div>
+      `).join('');
+
+      root.innerHTML = `
+        <div class="window">
+          <h2>สมุนไพรประจำ ${planetName}</h2>
+          <div class="herb-card-grid">${cardsHtml}</div>
+        </div>
+        <div class="button-group">
+          <button id="btn-herb-backlist">กลับ</button>
+        </div>
+      `;
+
+      setTimeout(() => {
+  // 👇 ใส่ Animation fade-up ให้การ์ดสมุนไพรทีละใบ
+  const herbCards = document.querySelectorAll('.herb-card');
+  herbCards.forEach((card, index) => {
+    card.style.animationDelay = `${index * 0.1}s`;
+    card.classList.add('fade-up');
+  });
+
+  // 👇 Event กดเพื่อดูรายละเอียดสมุนไพร
+  document.querySelectorAll('.herb-card').forEach(card => {
+    card.onclick = () => {
+      sfxPop.play();
+      const index = parseInt(card.dataset.index);
+      showHerbDetail(planetData.herbs[index], planetName);
+    };
+  });
+
+  document.getElementById("btn-herb-backlist").onclick = () => {
+    sfxPop.play();
+    playSlideTransition(showHerbPage);
+  };
+}, 30);
+    });
+}
+function showHerbDetail(herb, planetName) {
+  window.scrollTo(0, 0);
+  const root = document.getElementById("spa-root");
+  if (!root) return;
+
+  root.innerHTML = `
+    <div class="window">
+      <div class="herb-detail">
+        <h2 class="fade-up" style="animation-delay: 0.1s">สมุนไพรประจำ ${planetName}</h2>
+        <img class="herb-img-detail fade-up" style="animation-delay: 0.2s" src="images/${herb.img}" alt="${herb.name}">
+        <h3 class="fade-up" style="animation-delay: 0.3s">${herb.name}</h3>
+        <em class="fade-up" style="animation-delay: 0.4s">${herb.sci}</em>
+        <p class="fade-up" style="animation-delay: 0.5s"><strong>ธาตุ:</strong> ${herb.element || '–'}</p>
+        <p class="fade-up" style="animation-delay: 0.6s"><strong>สี:</strong> ${herb.color || '–'}</p>
+        <p class="fade-up" style="animation-delay: 0.7s"><strong>เทพที่เกี่ยวข้อง:</strong> ${herb.deity || '–'}</p>
+        <p class="fade-up" style="animation-delay: 0.8s"><strong>มักใช้ในพิธี:</strong> ${herb.magical_use || '–'}</p>
+      </div>
+    </div>
+    <div class="button-group">
+      <button id="btn-herb-backlist">กลับ</button>
+    </div>
+  `;
+
+  setTimeout(() => {
+    document.getElementById("btn-herb-backlist").onclick = () => {
+      sfxPop.play();
+      playSlideTransition(() => showHerbListPage(planetName));
+    };
+  }, 30);
+}
+
 // ============ SUPPORTER PAGE ============
 function showSupporterPage() {
   trackPageView('/supporters', 'Supporters Page');
@@ -1015,6 +1178,8 @@ function showSupporterPage() {
         <li>🌟 คุณ พัชราภรณ์</li>
         <li>🌟 Thanattha</li>
         <li>🌟 คุณ ธนัญรัตน์</li>
+        <li>🌟 Malangpor Natphat</li>
+        <li>🌟 Jessica Severa</li>
       </ul>
     </div>
     <div class="button-group">

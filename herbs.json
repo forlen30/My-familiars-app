@@ -1,0 +1,107 @@
+[
+  {
+    "planet": "ดวงอาทิตย์",
+    "herbs": [
+      {
+    "name": "เซนต์จอห์นเวิร์ต",
+    "english": "St. John’s Wort",
+    "sci": "Hypericum perforatum",
+    "element": "ไฟ",
+    "color": "เหลือง ทอง",
+    "magical_use": "ปกป้อง ไล่พลังงานลบ เสริมพลังใจ ขับไล่ปีศาจ",
+    "deity": "รา (Ra), อพอลโล (Apollo)",
+    "img": "saintjohn.png"
+  },
+  {
+    "name": "โรสแมรี่",
+    "english": "Rosemary",
+    "sci": "Rosmarinus officinalis",
+    "element": "ไฟ",
+    "color": "เหลือง เขียว",
+    "magical_use": "ฟื้นฟูจิตใจ ชำระล้างพลังงาน เสริมความจำและสมาธิ",
+    "deity": "เฮลิออส (Helios), เซคเมต (Sekhmet)",
+    "img": "rosemary.png"
+  },
+  {
+    "name": "ดาวเรือง",
+    "english": "Calendula",
+    "sci": "Calendula officinalis",
+    "element": "ไฟ",
+    "color": "ส้ม ทอง",
+    "magical_use": "รักษาโรคภายใน ดึงดูดความรุ่งเรือง เสริมชื่อเสียง",
+    "deity": "ลูห์ (Lugh), อพอลโล (Apollo)",
+    "img": "calendula.png"
+  },
+  {
+    "name": "เปลือกส้ม",
+    "english": "Citrus Peel",
+    "sci": "Citrus spp.",
+    "element": "ไฟ",
+    "color": "ส้ม ทอง",
+    "magical_use": "เสริมพลังงานชีวิต เพิ่มความสุข กระตุ้นแรงบันดาลใจ",
+    "deity": "รา (Ra), เบล (Bel)",
+    "img": "citrus.png"
+  },
+  {
+    "name": "กระเทียม",
+    "english": "Garlic",
+    "sci": "Allium sativum",
+    "element": "ไฟ",
+    "color": "ขาว เหลือง",
+    "magical_use": "ปกป้อง ขับไล่สิ่งไม่บริสุทธิ์ สร้างเกราะพลังงาน",
+    "deity": "เซคเมต (Sekhmet), เฮอร์คิวลิส (Hercules)",
+    "img": "garlic.png"
+  },
+   {
+    "name": "ออริกาโน",
+    "english": "Oregano",
+    "sci": "Origanum vulgare",
+    "element": "ไฟ",
+    "color": "เขียว เหลือง",
+    "magical_use": "ปกป้องบ้าน ดึงดูดโชคลาภ ส่งเสริมความมั่นคงในชีวิต",
+    "deity": "ซูส (Zeus), เฮลิออส (Helios)",
+    "img": "oregano.png"
+  },
+  {
+    "name": "มะกรูด",
+    "english": "Bergamot",
+    "sci": "Citrus bergamia",
+    "element": "ไฟ",
+    "color": "เขียวทอง",
+    "magical_use": "เสริมเสน่ห์ เพิ่มความมั่นใจ กระตุ้นจิตใจให้กล้าหาญ",
+    "deity": "ลูห์ (Lugh), เทพีซูลิส (Sulis)",
+    "img": "bergamot.png"
+  },
+  {
+    "name": "อบเชย",
+    "english": "Cinnamon",
+    "sci": "Cinnamomum verum",
+    "element": "ไฟ",
+    "color": "ทอง แดง",
+    "magical_use": "ดึงดูดโชคลาภ เสน่ห์ การเคลื่อนไหวทางการเงิน",
+    "deity": "รา (Ra), เฮลิออส (Helios)",
+    "img": "cinnamon.png"
+  },
+  {
+    "name": "กระวาน",
+    "english": "Cardamom",
+    "sci": "Elettaria cardamomum",
+    "element": "ไฟ",
+    "color": "เขียวทอง",
+    "magical_use": "เสริมความรัก กระตุ้นเสน่ห์ กระตุ้นใจให้เปิดรับ",
+    "deity": "อะโฟรไดที (Aphrodite), ลูห์ (Lugh)",
+    "img": "cardamom.png"
+  },
+  {
+    "name": "รากแองเจลิกา",
+    "english": "Angelica Root",
+    "sci": "Angelica archangelica",
+    "element": "ไฟ",
+    "color": "ขาวทอง",
+    "magical_use": "เสริมพลังแห่งแสง ปกป้องจากพลังชั่วร้าย เปิดทางจิตวิญญาณ",
+    "deity": "อัครเทวทูตมิคาเอล (Michael Archangel), อพอลโล (Apollo)",
+    "img": "angelica_root.png"
+  }
+    ]
+  }
+]
