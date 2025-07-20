@@ -1,4 +1,4 @@
-const CACHE_NAME = 'My-Familiars-v91'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
+const CACHE_NAME = 'My-Familiars-v96'; // เปลี่ยนชื่อเวอร์ชันทุกครั้งที่อัปเดต
 
 const ASSETS = [
   '/',
@@ -29,7 +29,6 @@ const ASSETS = [
   '/images/angelica_root.png',
   '/images/cardamom.png',
   '/images/cinnamon.png',
-  '/images/question-icon.png',
   '/images/card-back.png',
   '/images/Capybara.png',
   '/images/Alicorn.png',
@@ -100,13 +99,12 @@ const ASSETS = [
 ];
 
 
-
 self.addEventListener('install', event => {
   console.log('[SW] Installing and caching app shell...');
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
-   self.skipWaiting();
+   
 });
 
 self.addEventListener('activate', event => {
