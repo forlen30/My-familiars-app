@@ -1329,19 +1329,27 @@ img {
 /* card detail herb */
 .herb-card-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr); 
   gap: 16px;
   margin-top: 20px;
 }
 
 .herb-card {
-  background: #fff;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  text-align: center;
+  background: #fff;                    
+  border-radius: 16px;                  
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+  padding: 16px;                        
+  text-align: center;                   
+  cursor: pointer;                     
+  transition: transform 0.2s ease, box-shadow 0.2s ease; 
+  
+  display: flex;                       
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  overflow: hidden;                     
+  height: auto;                                        
 }
 
 .herb-card:hover {
@@ -1371,7 +1379,8 @@ img {
 
 .herb-img {
   width: 100px;
-  height: 100px;
+  height: auto;
+  max-height: 100px;
   object-fit: contain;
   margin: 0 auto 0.5rem;
   display: block;
