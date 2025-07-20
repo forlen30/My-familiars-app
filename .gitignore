@@ -1,8 +1,29 @@
-# โฟลเดอร์ที่เก็บแพ็กเกจทั้งหมด (สร้างโดย npm)
+# Node modules
 node_modules/
 
-# ไฟล์ตั้งค่าของ VS Code
+# VS Code settings
 .vscode/
 *.code-workspace
-# Local Netlify folder
-.netlify
+
+# Local Netlify build and cache
+.netlify/
+.netlify/functions-*
+
+# Local environment variables (สำคัญมาก)
+.env
+.env.local
+.env.development
+.env.production
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build files (ถ้ามีการ build อะไรเพิ่มในอนาคต)
+dist/
+build/

@@ -12,7 +12,11 @@ html, body {
   height: auto;
   min-height: 100vh;
   background-color: #bfe6ff;
+<<<<<<< HEAD
   background-image: url('images/bg-noomfoo-blue.png?v=76');
+=======
+  background-image: url('images/bg-noomfoo-blue.png?v=97');
+>>>>>>> develop
   background-repeat: repeat;
   background-size: auto;
   background-position: top left;
@@ -104,49 +108,6 @@ html, body {
   transform: rotate(-24deg); /* ← เพิ่มบรรทัดนี้ */
 }
 
-
-.encyclopedia-box {
-  position: relative;
-  background: #e3f0ff;               
-  border: 3px solid #91c7f8;        
-  border-radius: 20px;
-  margin: 30px auto 0 auto;
-  padding: 18px 12px 14px 12px;
-  text-align: center;
-  font-size: 1.17em;                 
-  box-shadow: 0 4px 12px rgba(80,60,120,0.11);
-  opacity: 0.8;                         
-  transition: opacity 0.2s;
-  font-family: 'Itim', cursive, sans-serif;
-}
-
-.herb-leaf {
-  position: absolute;
-  left: -25px;
-  bottom: -25px;
-  width: 90px;
-  height: auto;
-  opacity: 0.75;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.encyclopedia-box strong {
-  color: #8ec9ff;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  font-size: 1.12em;
-  display: block;
-  margin-bottom: 2px;
-}
-
-.encyclopedia-box span {
-  color: #8ec9ff;
-  font-size: 0.96em;
-  font-style: italic;
-  display: block;
-}
-
 .my-familiars {
   position: relative;
   background: #e3f0ff;               
@@ -235,7 +196,7 @@ html, body {
   display: block;
 }
 
-.encyclopedia-box, .wheel-box, .my-familiars{
+.wheel-box, .my-familiars{
   -webkit-tap-highlight-color: rgba(0,0,0,0.08);
   touch-action: manipulation;
   user-select: none;
@@ -249,14 +210,12 @@ html, body {
     background-color 0.15s;
 }
 
-.encyclopedia-box:hover,
 .wheel-box:hover,
 .my-familiars:hover {
   filter: brightness(1.06) saturate(1.12);
   box-shadow: 0 6px 22px rgba(142,201,255,0.15), 0 2px 8px rgba(0,0,0,0.12);
 }
 
-.encyclopedia-box:active,
 .wheel-box:active,
 .my-familiars:active {
   filter: brightness(0.95) saturate(1.05);
@@ -1288,4 +1247,181 @@ img {
   margin-top: 15px;
   padding-top: 15px;
   border-top: 1px dashed #d0e0f0;
+}
+
+.encyclopedia-box {
+  background: #fff;
+  border: 3px solid #8ec9ff;
+  margin: 30px auto 0 auto;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(142,201,255,0.15);
+  text-align: center;
+  font-family: 'Itim', cursive, sans-serif;
+  color: #261427;
+  position: relative; /* ← เพิ่มบรรทัดนี้ */ 
+}
+
+.herb-leaf {
+  position: absolute;
+  left: -25px;
+  bottom: -25px;
+  width: 70px;
+  height: auto;
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.herb-planet-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  justify-items: center;
+  margin-top: 20px;
+  padding: 0 10px;
+}
+
+@media (min-width: 420px) {
+  .herb-planet-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.herb-planet {
+  background: white;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.12);
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 100px;
+  box-sizing: border-box;
+}
+
+.herb-planet:hover {
+  transform: translateY(-2px) scale(1.035);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  filter: brightness(1.04);
+}
+
+.herb-planet:active {
+  transform: translateY(2px) scale(0.97);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  filter: brightness(0.97);
+}
+
+
+.herb-planet img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  margin-bottom: 6px;
+}
+
+.herb-planet span {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  text-align: center;
+}
+
+/* กล่องรวมทั้งหมด */
+.herb-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 16px;
+  justify-content: center;
+  align-content: start;
+  padding: 20px 16px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* เพิ่ม columns ถ้าจอกว้างขึ้น */
+@media (min-width: 480px) {
+  .herb-card-grid {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+}
+
+/* การ์ดสมุนไพรแต่ละใบ */
+.herb-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  width: 100%;
+  max-width: 140px;
+  box-sizing: border-box;
+}
+
+.herb-card:hover {
+  transform: translateY(-2px) scale(1.035);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  filter: brightness(1.04);
+}
+
+.herb-card:active {
+  transform: translateY(2px) scale(0.97);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  filter: brightness(0.97);
+}
+
+.herb-card img {
+  width: 80px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+
+.herb-card .herb-name {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: #3b2f2f;
+}
+
+.herb-card .herb-sci {
+  font-style: italic;
+  font-size: 14px;
+  color: #777;
+}
+
+
+.herb-img-detail {
+  display: block;
+  width: 150px; /* หรือ 180px ถ้าอยากให้ใหญ่มาก */
+  height: auto;
+  margin: 24px auto;
+  transition: transform 0.3s ease;
+}
+
+/* fade herb */
+.fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.4s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
