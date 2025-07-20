@@ -12,7 +12,7 @@ html, body {
   height: auto;
   min-height: 100vh;
   background-color: #bfe6ff;
-  background-image: url('images/bg-noomfoo-blue.png?v=90');
+  background-image: url('images/bg-noomfoo-blue.png?v=91');
   background-repeat: repeat;
   background-size: auto;
   background-position: top left;
@@ -1326,30 +1326,45 @@ img {
   text-align: center;
 }
 
-/* card detail herb */
+/* กล่องรวมทั้งหมด */
 .herb-card-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); 
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
   gap: 16px;
-  margin-top: 20px;
+  justify-content: center;
+  align-content: start;
+  padding: 20px 16px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.herb-card {
-  background: #fff;                    
-  border-radius: 16px;                  
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
-  padding: 16px;                        
-  text-align: center;                   
-  cursor: pointer;                     
-  transition: transform 0.2s ease, box-shadow 0.2s ease; 
-  
-  display: flex;                       
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
+/* เพิ่ม columns ถ้าจอกว้างขึ้น */
+@media (min-width: 480px) {
+  .herb-card-grid {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+}
 
-  overflow: hidden;                     
-  height: auto;                                        
+/* การ์ดสมุนไพรแต่ละใบ */
+.herb-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  width: 100%;
+  max-width: 140px;
+  box-sizing: border-box;
 }
 
 .herb-card:hover {
@@ -1364,9 +1379,16 @@ img {
   filter: brightness(0.97);
 }
 
+.herb-card img {
+  width: 80px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+
 .herb-card .herb-name {
   font-weight: bold;
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 4px;
   color: #3b2f2f;
 }
@@ -1377,14 +1399,6 @@ img {
   color: #777;
 }
 
-.herb-img {
-  width: 100px;
-  height: auto;
-  max-height: 100px;
-  object-fit: contain;
-  margin: 0 auto 0.5rem;
-  display: block;
-}
 
 .herb-img-detail {
   display: block;

@@ -89,10 +89,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 
 // -- Sound Preloads --
-const sfxPop = new Audio("sound/pop.MP3?v=90");
-const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=90");
-const sfxCollect = new Audio("sound/collect.MP3?v=90"); 
-const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=90"); 
+const sfxPop = new Audio("sound/pop.MP3?v=91");
+const sfxSwipe = new Audio("sound/Swipe-card.MP3?v=91");
+const sfxCollect = new Audio("sound/collect.MP3?v=91"); 
+const sfxProgressBar = new Audio("sound/progress-bar.MP3?v=91"); 
 
 // ============ Data: ไพ่ทั้งหมด =============
 const cards = [
