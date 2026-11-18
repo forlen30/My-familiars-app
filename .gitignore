@@ -27,3 +27,8 @@ Thumbs.db
 # Build files (ถ้ามีการ build อะไรเพิ่มในอนาคต)
 dist/
 build/
+
+# Vite build output / import working files
+dist/
+import-output/
+facebook-export/

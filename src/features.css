@@ -1,0 +1,98 @@
+/* สไตล์ของฟีเจอร์ใหม่ (ปฏิทินจันทร์ / กงล้อแห่งปี / คลังความรู้ / บัญชี)
+   ใช้โทนสีเดียวกับแอปเดิม */
+
+/* ---- กล่องเมนูหน้าแรก ---- */
+.feature-box {
+  position: relative;
+  background: #e3f0ff;
+  border: 3px solid #91c7f8;
+  border-radius: 20px;
+  margin: 30px auto 0 auto;
+  padding: 18px 12px 14px 12px;
+  text-align: center;
+  font-size: 1.17em;
+  box-shadow: 0 4px 12px rgba(80,60,120,0.11);
+  font-family: 'Itim', cursive, sans-serif;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.08);
+  touch-action: manipulation;
+  transition: box-shadow 0.15s, filter 0.11s, transform 0.09s;
+}
+.feature-box:hover { filter: brightness(1.06) saturate(1.12); }
+.feature-box:active { transform: scale(0.98) translateY(2px); }
+.feature-box strong { color: #4a8fc9; font-size: 1.12em; display: block; margin-bottom: 2px; }
+.feature-box span:not(.new-badge) { color: #5f9fd6; font-size: 0.9em; display: block; }
+.feature-moon-emoji { font-size: 2.2em; line-height: 1.1; margin-bottom: 4px; }
+.wheel-box { opacity: 1; }
+.wheel-box span:not(.new-badge) { font-style: normal; color: #5f9fd6; font-size: 0.9em; }
+
+/* ---- ปฏิทินจันทร์ ---- */
+.moon-page h2, .wheel-page h2, .library-page h2, .account-page h2 { margin-top: 0; }
+.moon-hero { margin: 10px 0 14px; }
+.moon-hero-emoji { font-size: 4.2em; line-height: 1.1; }
+.moon-hero-name { font-size: 1.3em; color: #4a8fc9; margin-top: 4px; }
+.moon-hero-sub { color: #777; font-size: 0.95em; }
+.moon-meaning { text-align: left; background: #f4f9ff; border-radius: 14px; padding: 12px 16px; }
+.moon-meaning p { margin: 6px 0; }
+.moon-meaning ul { margin: 4px 0 8px; padding-left: 1.2em; }
+.moon-section-title { margin: 22px 0 8px; color: #4a8fc9; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.moon-nav { background: #e3f0ff; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1.2em; cursor: pointer; color: #4a8fc9; font-family: inherit; }
+.moon-upcoming { list-style: none; padding: 0; margin: 0; text-align: left; }
+.moon-upcoming li { display: flex; justify-content: space-between; gap: 8px; padding: 8px 4px; border-bottom: 1px dashed #d6e9fb; font-size: 0.95em; }
+.moon-upcoming li span:last-child { color: #777; white-space: nowrap; }
+.moon-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.moon-cal-head { font-size: 0.8em; color: #999; }
+.moon-cal-cell { background: #f4f9ff; border-radius: 8px; padding: 3px 0; display: flex; flex-direction: column; align-items: center; min-height: 40px; }
+.moon-cal-cell.empty { background: transparent; }
+.moon-cal-cell.major { background: #fff4d6; }
+.moon-cal-cell.today { outline: 2px solid #8ec9ff; }
+.moon-cal-day { font-size: 0.75em; color: #777; }
+.moon-cal-emoji { font-size: 1.1em; }
+.moon-note { font-size: 0.8em; color: #999; margin-top: 14px; }
+
+/* ---- กงล้อแห่งปี ---- */
+.wheel-next { background: #f4f9ff; border-radius: 16px; padding: 14px; margin: 10px 0 16px; }
+.wheel-next-emoji { font-size: 3em; }
+.wheel-en { color: #999; font-size: 0.85em; }
+.wheel-countdown { display: inline-block; margin-top: 6px; background: #8ec9ff; color: #215981; border-radius: 999px; padding: 2px 14px; }
+.wheel-list { list-style: none; padding: 0; margin: 0; text-align: left; }
+.wheel-list li { display: flex; align-items: center; gap: 12px; padding: 8px 6px; border-bottom: 1px dashed #d6e9fb; }
+.wheel-list li.past { opacity: 0.5; }
+.wheel-list li.next { background: #fff4d6; border-radius: 10px; }
+.wheel-list-emoji { font-size: 1.6em; width: 1.6em; text-align: center; }
+
+/* ---- คลังความรู้ ---- */
+.library-page input[type="search"], .account-page input[type="email"] {
+  width: 100%; box-sizing: border-box; padding: 10px 14px; border-radius: 12px;
+  border: 2px solid #cfe6fb; font-family: inherit; font-size: 1em; margin: 6px 0 10px;
+  user-select: text; -webkit-user-select: text;
+}
+.lib-cats { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 10px; }
+.lib-cat { border: none; background: #e3f0ff; color: #4a8fc9; border-radius: 999px; padding: 4px 12px; font-family: inherit; cursor: pointer; }
+.lib-cat.active { background: #8ec9ff; color: #215981; }
+.lib-list { list-style: none; padding: 0; margin: 0; text-align: left; }
+.lib-item { padding: 10px 6px; border-bottom: 1px dashed #d6e9fb; cursor: pointer; }
+.lib-item:hover { background: #f4f9ff; }
+.lib-item-title { color: #261427; }
+.lib-item-meta { color: #999; font-size: 0.82em; }
+.lib-empty { text-align: center; color: #999; padding: 16px; }
+.library-article { text-align: left; }
+.library-article h2 { text-align: center; }
+.lib-article-body { line-height: 1.7; margin-top: 12px; user-select: text; -webkit-user-select: text; }
+.lib-article-img { width: 100%; height: auto; border-radius: 12px; margin-top: 10px; }
+
+/* ---- บัญชี ---- */
+.account-status { min-height: 1.4em; color: #4a8fc9; }
+.account-fineprint { font-size: 0.8em; color: #999; }
+.account-email { color: #777; word-break: break-all; }
+.premium-box { background: #f4f9ff; border-radius: 16px; padding: 14px; margin: 10px 0; text-align: left; }
+.premium-box.active { background: #fff4d6; }
+.premium-box strong { display: block; text-align: center; color: #4a8fc9; font-size: 1.1em; }
+.premium-box .button { display: block; margin: 12px auto 0; }
+.button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.link-button { background: none; border: none; color: #c0392b; font-family: inherit; text-decoration: underline; cursor: pointer; font-size: 0.85em; }
+.wheel-box strong { color: #4a8fc9; }
+.wheel-box { padding-left: 70px; padding-right: 20px; }
+.library-article h2 { font-size: 1.3em; }
+.lib-source { text-align: center; margin-top: 16px; }
+.lib-source a { color: #6a5acd; font-weight: bold; }
