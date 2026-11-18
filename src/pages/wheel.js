@@ -1,5 +1,5 @@
 import { sfxPop, play } from '../lib/sound.js';
-import { getRoot, playSlideTransition, trackPageView } from '../lib/ui.js';
+import { getRoot, playSlideTransition, trackPageView, setNav } from '../lib/ui.js';
 import { getSabbatsForYear, getNextSabbat } from '../lib/astro.js';
 import { showHome } from './home.js';
 
@@ -7,6 +7,7 @@ const fmt = (d) => d.toLocaleDateString('th-TH', { day: 'numeric', month: 'long'
 
 export function showWheelPage() {
   trackPageView('/wheel', 'Wheel of the Year');
+  setNav('home');
   const root = getRoot();
   if (!root) return;
   window.scrollTo(0, 0);
@@ -29,8 +30,8 @@ export function showWheelPage() {
         <p>${next.theme}</p>
       </div>
       <ul class="wheel-list">
-        ${list.map(s => `
-          <li class="${s.date < today ? 'past' : ''} ${s.key === next.key && s.date.getTime() === next.date.getTime() ? 'next' : ''}">
+        ${list.map((s, idx) => `
+          <li style="--i:${idx}" class="${s.date < today ? 'past' : ''} ${s.key === next.key && s.date.getTime() === next.date.getTime() ? 'next' : ''}">
             <span class="wheel-list-emoji">${s.emoji}</span>
             <span class="wheel-list-text"><strong>${s.nameTh}</strong><br><small>${fmt(s.date)}</small></span>
           </li>`).join('')}

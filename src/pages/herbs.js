@@ -1,5 +1,5 @@
 import { sfxPop, play } from '../lib/sound.js';
-import { getRoot, playSlideTransition } from '../lib/ui.js';
+import { getRoot, playSlideTransition, setNav } from '../lib/ui.js';
 import { escapeHtml } from '../lib/escape.js';
 import { showHome } from './home.js';
 
@@ -16,6 +16,7 @@ const AVAILABLE_PLANETS = ['sun']; // เปิดแค่ sun (เหมือ
 
 export function showHerbPage() {
   window.scrollTo(0, 0);
+  setNav('home');
   const root = getRoot();
   if (!root) return;
 

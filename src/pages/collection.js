@@ -1,7 +1,7 @@
 import { cards } from '../data/cards.js';
 import { loadPlayerData } from '../lib/player.js';
 import { sfxPop, play } from '../lib/sound.js';
-import { getRoot, playSlideTransition, trackPageView } from '../lib/ui.js';
+import { getRoot, playSlideTransition, trackPageView, setNav } from '../lib/ui.js';
 import { escapeHtml } from '../lib/escape.js';
 import { loadQuestions, getQuestionsCache } from './questions.js';
 import { showHome } from './home.js';
@@ -11,6 +11,7 @@ const CARDS_PER_PAGE = 4;
 
 export async function showCollectionHubPage() {
   trackPageView('/collection-hub', 'Collection Hub');
+  setNav('grimoire');
   const root = getRoot();
   const playerData = loadPlayerData();
   const questions = await loadQuestions().catch(() => getQuestionsCache());

@@ -1,6 +1,6 @@
 import { loadPlayerData, savePlayerData, getRankFromExp, todayKey } from '../lib/player.js';
 import { sfxPop, play } from '../lib/sound.js';
-import { getRoot, playSlideTransition } from '../lib/ui.js';
+import { getRoot, playSlideTransition, setNav } from '../lib/ui.js';
 import { escapeHtml } from '../lib/escape.js';
 import { showHome } from './home.js';
 
@@ -26,6 +26,7 @@ function backToHome() {
 export async function showDailyQuestionPage() {
   const root = getRoot();
   if (!root) return;
+  setNav('home');
 
   const playerData = loadPlayerData();
   const answeredIndexes = (playerData.answeredQuestions || []).map(q => q.index);

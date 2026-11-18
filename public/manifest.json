@@ -1,10 +1,10 @@
 {
   "name": "My Familiars",
   "short_name": "My Familiars",
-  "start_url": "/index.html?v=98", 
+  "start_url": "/index.html?v=98",
   "display": "standalone",
-  "background_color": "#8ec9ff",
-  "theme_color": "#8ec9ff",
+  "background_color": "#33196b",
+  "theme_color": "#33196b",
   "icons": [
     {
       "src": "images/icon-192.png",

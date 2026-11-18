@@ -1,17 +1,15 @@
 // คลังความรู้: บทความจากเพจ Magic Books & Candle
-// - ถ้าตั้ง Supabase แล้ว: อ่านจากตาราง articles (รองรับบทความพรีเมียม)
-// - ถ้ายังไม่ตั้ง: อ่านจากไฟล์ public/data/articles.json ที่สร้างจากสคริปต์นำเข้าข้อมูลเพจ
+// อ่านจากไฟล์ public/data/articles.json ที่สร้างจากสคริปต์นำเข้าข้อมูลเพจ (ไม่มีค่าใช้จ่าย ไม่ต้องมีฐานข้อมูล)
 import { sfxPop, play } from '../lib/sound.js';
-import { getRoot, playSlideTransition, trackPageView } from '../lib/ui.js';
+import { getRoot, playSlideTransition, trackPageView, setNav } from '../lib/ui.js';
 import { escapeHtml } from '../lib/escape.js';
-import { supabase, isCloudEnabled } from '../lib/supabase.js';
 import { showHome } from './home.js';
 
 const PAGE_SIZE = 20;
 let state = { category: 'all', query: '', page: 0 };
 let staticCache = null;
 
-async function loadStatic() {
+async function loadData() {
   if (staticCache) return staticCache;
   try {
     const res = await fetch('/data/articles.json');
@@ -24,19 +22,7 @@ async function loadStatic() {
 
 async function fetchArticles() {
   const { category, query, page } = state;
-  if (isCloudEnabled) {
-    let q = supabase.from('articles')
-      .select('id,title,excerpt,category,published_at,is_premium', { count: 'exact' })
-      .eq('status', 'published')
-      .order('published_at', { ascending: false })
-      .range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1);
-    if (category !== 'all') q = q.eq('category', category);
-    if (query) q = q.ilike('title', `%${query.replace(/[%_]/g, '')}%`);
-    const { data, count, error } = await q;
-    const { data: cats } = await supabase.from('article_categories').select('category');
-    if (!error) return { articles: data || [], total: count || 0, categories: (cats || []).map(c => c.category) };
-  }
-  const data = await loadStatic();
+  const data = await loadData();
   let list = data.articles;
   if (category !== 'all') list = list.filter(a => a.category === category);
   if (query) {
@@ -50,37 +36,20 @@ async function fetchArticles() {
   };
 }
 
-async function fetchArticle(id) {
-  if (isCloudEnabled) {
-    // ข้อมูลหัวเรื่องอ่านได้ทุกคน ส่วนเนื้อหา (article_bodies) ถูกกันด้วย RLS ถ้าเป็นบทความพรีเมียม
-    const { data: meta } = await supabase.from('articles')
-      .select('id,title,category,published_at,is_premium,source_url').eq('id', id).maybeSingle();
-    if (!meta) return null;
-    const { data: body } = await supabase.from('article_bodies')
-      .select('body,image_url').eq('article_id', id).maybeSingle();
-    if (!body) return meta.is_premium ? { locked: true } : { ...meta, body: '' };
-    return { ...meta, ...body };
-  }
-  const data = await loadStatic();
-  return data.articles.find(a => String(a.id) === String(id)) || null;
-}
-
 const fmtDate = (s) => s ? new Date(s).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
 
 export async function showLibraryPage() {
   trackPageView('/library', 'Library');
+  setNav('library');
   const root = getRoot();
   if (!root) return;
-  window.scrollTo(0, 0);
 
-  root.innerHTML = `<div class="window"><h2>คลังความรู้</h2><p>กำลังโหลด...</p></div>`;
   const { articles, total, categories } = await fetchArticles();
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-
   const empty = total === 0 && !state.query && state.category === 'all';
 
   root.innerHTML = `
-    <div class="window library-page">
+    <div class="window library-page reveal">
       <h2>คลังความรู้</h2>
       ${empty ? `<p>กำลังรวบรวมบทความจากเพจ Magic Books &amp; Candle<br>เร็ว ๆ นี้ ✨</p>` : `
       <input type="search" id="lib-search" placeholder="ค้นหาบทความ..." value="${escapeHtml(state.query)}" maxlength="60">
@@ -89,9 +58,9 @@ export async function showLibraryPage() {
         ${categories.map(c => `<button class="lib-cat ${state.category === c ? 'active' : ''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')}
       </div>
       <ul class="lib-list">
-        ${articles.map(a => `
-          <li class="lib-item" data-id="${escapeHtml(a.id)}">
-            <div class="lib-item-title">${a.is_premium ? '🌟 ' : ''}${escapeHtml(a.title)}</div>
+        ${articles.map((a, i) => `
+          <li class="lib-item" style="--i:${i}" data-id="${escapeHtml(a.id)}">
+            <div class="lib-item-title">${escapeHtml(a.title)}</div>
             <div class="lib-item-meta">${escapeHtml(a.category || '')} · ${fmtDate(a.published_at)}</div>
           </li>`).join('') || '<li class="lib-empty">ไม่พบบทความ</li>'}
       </ul>
@@ -104,13 +73,18 @@ export async function showLibraryPage() {
     <div class="button-group"><button id="btn-back">กลับ</button></div>
   `;
 
+  const search = document.getElementById('lib-search');
+  if (search && state.query) {
+    search.focus();
+    search.setSelectionRange(search.value.length, search.value.length);
+  }
+
   setTimeout(() => {
     document.getElementById('btn-back').onclick = () => {
       play(sfxPop);
       state = { category: 'all', query: '', page: 0 };
       playSlideTransition(showHome);
     };
-    const search = document.getElementById('lib-search');
     if (search) {
       let t;
       search.oninput = () => {
@@ -122,29 +96,37 @@ export async function showLibraryPage() {
       b.onclick = () => { play(sfxPop); state.category = b.dataset.cat; state.page = 0; showLibraryPage(); };
     });
     document.querySelectorAll('.lib-item').forEach(li => {
-      li.onclick = () => { play(sfxPop); showArticle(li.dataset.id); };
+      li.onclick = () => { play(sfxPop); playSlideTransition(() => showArticle(li.dataset.id)); };
     });
     const prev = document.getElementById('lib-prev');
     const next = document.getElementById('lib-next');
-    if (prev) prev.onclick = () => { state.page--; showLibraryPage(); };
-    if (next) next.onclick = () => { state.page++; showLibraryPage(); };
+    if (prev) prev.onclick = () => { state.page--; playSlideTransition(showLibraryPage); };
+    if (next) next.onclick = () => { state.page++; playSlideTransition(showLibraryPage); };
   }, 30);
 }
 
-async function showArticle(id) {
-  const root = getRoot();
-  window.scrollTo(0, 0);
-  const a = await fetchArticle(id);
+// เกร็ดประจำวัน: เลือกบทความ 1 เรื่องต่อวัน (ทุกคนเห็นเรื่องเดียวกันในวันเดียวกัน) ไม่รวมโพสต์ขายของ
+export async function getDailyArticle() {
+  const data = await loadData();
+  const pool = data.articles.filter(a => a.category !== 'ข่าวสารและสินค้า' && (a.body || '').length > 300);
+  if (!pool.length) return null;
+  const d = new Date();
+  const seed = d.getFullYear() * 1000 + Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
+  return pool[(seed * 2654435761 >>> 0) % pool.length];
+}
 
-  let content;
-  if (!a) content = '<p>ไม่พบบทความ</p>';
-  else if (a.locked) content = '<h2>🌟 บทความพิเศษ</h2><p>บทความนี้สำหรับสมาชิกพรีเมียม</p>';
-  else {
-    // แสดงเนื้อหาเป็นข้อความล้วน (ไม่รัน HTML จากฐานข้อมูล) และแปลงขึ้นบรรทัดใหม่
+export async function showArticle(id, backTo = showLibraryPage) {
+  const root = getRoot();
+  const data = await loadData();
+  const a = data.articles.find(x => String(x.id) === String(id));
+
+  let content = '<p>ไม่พบบทความ</p>';
+  if (a) {
+    // แสดงเนื้อหาเป็นข้อความล้วน (ไม่รัน HTML จากไฟล์ข้อมูล) และแปลงขึ้นบรรทัดใหม่
     const body = escapeHtml(a.body || '').replace(/\n/g, '<br>');
     content = `
-      <h2>${escapeHtml(a.title)}</h2>
       <div class="lib-item-meta">${escapeHtml(a.category || '')} · ${fmtDate(a.published_at)}</div>
+      <h2>${escapeHtml(a.title)}</h2>
       ${a.image_url && /^(https:\/\/|\/)/.test(a.image_url) ? `<img class="lib-article-img" src="${escapeHtml(a.image_url)}" alt="" loading="lazy">` : ''}
       <div class="lib-article-body">${body}</div>
       ${a.source_url && /^https:\/\/(www\.)?facebook\.com\//.test(a.source_url)
@@ -152,9 +134,9 @@ async function showArticle(id) {
   }
 
   root.innerHTML = `
-    <div class="window library-article">${content}</div>
+    <div class="window library-article reveal">${content}</div>
     <div class="button-group"><button id="btn-back">กลับ</button></div>`;
   setTimeout(() => {
-    document.getElementById('btn-back').onclick = () => { play(sfxPop); showLibraryPage(); };
+    document.getElementById('btn-back').onclick = () => { play(sfxPop); playSlideTransition(backTo); };
   }, 30);
 }

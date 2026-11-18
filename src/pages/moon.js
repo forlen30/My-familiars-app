@@ -1,7 +1,8 @@
 import { sfxPop, play } from '../lib/sound.js';
-import { getRoot, playSlideTransition, trackPageView } from '../lib/ui.js';
+import { getRoot, playSlideTransition, trackPageView, setNav } from '../lib/ui.js';
 import { getMoonToday, getUpcomingQuarters, getMonthCalendar } from '../lib/astro.js';
 import { showHome } from './home.js';
+import { moonSvg } from '../lib/moon-svg.js';
 
 const TH_MONTHS = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
   'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
@@ -15,6 +16,7 @@ let viewMonth = null;
 
 export function showMoonPage() {
   trackPageView('/moon', 'Moon Calendar');
+  setNav('moon');
   const root = getRoot();
   if (!root) return;
   window.scrollTo(0, 0);
@@ -30,8 +32,8 @@ export function showMoonPage() {
 
   const cells = [
     ...Array(firstDow).fill('<div class="moon-cal-cell empty"></div>'),
-    ...cal.map(c => `
-      <div class="moon-cal-cell ${isThisMonth && c.day === now.getDate() ? 'today' : ''} ${['new', 'full'].includes(c.key) ? 'major' : ''}">
+    ...cal.map((c, idx) => `
+      <div style="--i:${idx}" class="moon-cal-cell ${isThisMonth && c.day === now.getDate() ? 'today' : ''} ${['new', 'full'].includes(c.key) ? 'major' : ''}">
         <span class="moon-cal-day">${c.day}</span>
         <span class="moon-cal-emoji">${c.emoji}</span>
       </div>`)
@@ -41,7 +43,7 @@ export function showMoonPage() {
     <div class="window moon-page">
       <h2>ปฏิทินจันทร์</h2>
       <div class="moon-hero">
-        <div class="moon-hero-emoji">${moon.emoji}</div>
+        ${moonSvg(moon.angle)}
         <div class="moon-hero-name">${moon.nameTh}</div>
         <div class="moon-hero-sub">สว่าง ${moon.illuminationPct}% · ดวงจันทร์อยู่${moon.zodiac}</div>
       </div>

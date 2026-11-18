@@ -1,7 +1,7 @@
 {
   "name": "my-familiars",
   "private": true,
-  "version": "1.4.0",
+  "version": "1.6.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -9,7 +9,6 @@
     "import:facebook": "node scripts/import-facebook.mjs"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.50.3",
     "astronomy-engine": "^2.1.19"
   },
   "devDependencies": {

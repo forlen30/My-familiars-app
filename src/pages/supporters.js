@@ -1,5 +1,5 @@
 import { sfxPop, play } from '../lib/sound.js';
-import { getRoot, playSlideTransition, trackPageView } from '../lib/ui.js';
+import { getRoot, playSlideTransition, trackPageView, setNav } from '../lib/ui.js';
 import { escapeHtml } from '../lib/escape.js';
 import { showHome } from './home.js';
 
@@ -17,6 +17,7 @@ const SUPPORTERS = [
 
 export function showSupporterPage() {
   trackPageView('/supporters', 'Supporters Page');
+  setNav('home');
   const root = getRoot();
   if (!root) return;
 
@@ -25,7 +26,7 @@ export function showSupporterPage() {
       <h1>ขอบคุณผู้สนับสนุน</h1>
       <p style="margin-top:1em;">แอพนี้เกิดขึ้นได้ด้วยพลังแห่งความรักจากทุกท่าน 💖💖💖 </p>
       <ul class="supporter-list">
-        ${SUPPORTERS.map(n => `<li>🌟 ${escapeHtml(n)}</li>`).join('')}
+        ${SUPPORTERS.map((n, i) => `<li style="--i:${i}">✦ ${escapeHtml(n)}</li>`).join('')}
       </ul>
     </div>
     <div class="button-group"><button id="btn-back"> กลับ</button></div>

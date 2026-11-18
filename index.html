@@ -2,20 +2,20 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>My Familiars</title>
-  <meta name="description" content="My Familiars โดย Magic Books & Candle — ไพ่สัตว์ประจำวัน สมุนไพรเวท ปฏิทินจันทร์ และกงล้อแห่งปี" />
+  <meta name="description" content="My Familiars โดย Magic Books & Candle — ไพ่สัตว์ประจำวัน สมุนไพรเวท ปฏิทินจันทร์ กงล้อแห่งปี และคลังความรู้สายเวท" />
   <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#8ec9ff" />
+  <meta name="theme-color" content="#33196b" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="My Familiars" />
-  <link rel="preload" as="image" href="/images/bg-noomfoo-blue.png" />
+  <meta name="view-transition" content="same-origin" />
   <link rel="apple-touch-icon" href="/images/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Itim&family=Mitr:wght@400;500&family=Sarabun:wght@400;600&display=swap" rel="stylesheet" />
 </head>
 
 <body>
@@ -24,17 +24,37 @@
     <div id="slide-screen"></div>
 
     <div id="app-info">
-      <p>Lily A • Magic Books & Candle</p>
-      <p>Since 2025 • Version 1.4.0</p>
+      <p>Lily A • Magic Books &amp; Candle</p>
+      <p>Since 2025 • Version 1.6.0</p>
       <p>
-        <a href="https://www.facebook.com/magicbooksandcandle" target="_blank" rel="noopener noreferrer">Facebook</a> |
-        <a href="https://www.youtube.com/@LilyAmagicbooksandcandle" target="_blank" rel="noopener noreferrer">YouTube</a> |
-        <a href="https://www.tiktok.com/@magicbooksncandle" target="_blank" rel="noopener noreferrer">TikTok</a> |
+        <a href="https://www.facebook.com/magicbooksandcandle" target="_blank" rel="noopener noreferrer">Facebook</a> ·
+        <a href="https://www.youtube.com/@LilyAmagicbooksandcandle" target="_blank" rel="noopener noreferrer">YouTube</a> ·
+        <a href="https://www.tiktok.com/@magicbooksncandle" target="_blank" rel="noopener noreferrer">TikTok</a> ·
         <a href="https://www.patreon.com/MagicBooksandCandle" target="_blank" rel="noopener noreferrer">Patreon</a>
       </p>
       <p><a href="/privacy.html" target="_blank" rel="noopener">นโยบายความเป็นส่วนตัว</a></p>
     </div>
   </div>
+
+  <nav class="bottom-nav" id="bottom-nav" data-active="home" aria-label="เมนูหลัก">
+    <span class="nav-indicator" aria-hidden="true"></span>
+    <button class="nav-item active" data-nav="home" aria-label="หน้าแรก">
+      <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h5v-6h4v6h5V9.5"/></svg>
+      <span>หน้าแรก</span>
+    </button>
+    <button class="nav-item" data-nav="moon" aria-label="ปฏิทินจันทร์">
+      <svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/></svg>
+      <span>ปฏิทินจันทร์</span>
+    </button>
+    <button class="nav-item" data-nav="library" aria-label="คลังความรู้">
+      <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5Z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M12 7.5c-.8 1-.8 2 0 2.8.8-.8.8-1.8 0-2.8Z"/></svg>
+      <span>คลังความรู้</span>
+    </button>
+    <button class="nav-item" data-nav="grimoire" aria-label="กรีมัวร์ของฉัน">
+      <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M12 8l1.2 2.4 2.6.4-1.9 1.8.5 2.6L12 14l-2.4 1.2.5-2.6-1.9-1.8 2.6-.4Z"/></svg>
+      <span>กรีมัวร์</span>
+    </button>
+  </nav>
 
   <script type="module" src="/src/main.js"></script>
 </body>

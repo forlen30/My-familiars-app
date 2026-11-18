@@ -1,39 +1,31 @@
 import { cards } from '../data/cards.js';
 import { loadPlayerData, savePlayerData, getRankFromExp, todayKey } from '../lib/player.js';
-import { sfxPop, sfxSwipe, play } from '../lib/sound.js';
-import { getRoot, playSlideTransition, trackPageView } from '../lib/ui.js';
+import { sfxPop, sfxSwipe, sfxCollect, play } from '../lib/sound.js';
+import { getRoot, playSlideTransition, trackPageView, setNav } from '../lib/ui.js';
+import { burstIn, haptic } from '../lib/fx.js';
 import { showHome } from './home.js';
 
 const APP_URL = 'https://my-familiars.netlify.app';
 let countdownInterval = null;
 
 function stopCountdown() {
-  if (countdownInterval) {
-    clearInterval(countdownInterval);
-    countdownInterval = null;
-  }
+  if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
 }
 
 function updateCountdownTimer() {
   const timerBox = document.getElementById('countdown-timer');
-  const backButton = document.getElementById('btn-back');
-  if (!timerBox || !backButton) {
-    stopCountdown();
-    return;
-  }
+  if (!timerBox) { stopCountdown(); return; }
   const now = new Date();
   const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
   const diff = tomorrow - now;
-
+  timerBox.style.display = 'inline-block';
   if (diff <= 0) {
-    timerBox.innerHTML = `🎉 <span style="color:#4caf50;">คุณสามารถสุ่มใหม่ได้แล้ว!</span>`;
+    timerBox.textContent = '🎉 สุ่มไพ่ใหม่ได้แล้ว!';
   } else {
-    timerBox.style.display = 'inline-block';
-    backButton.style.display = 'inline-block';
-    const hours = Math.floor(diff / 3600000);
-    const minutes = Math.floor((diff / 60000) % 60);
-    const seconds = Math.floor((diff / 1000) % 60);
-    timerBox.innerHTML = `🕒 <span style="color:#444;">พร้อมสุ่มใหม่ในอีก <b>${hours}</b> ชั่วโมง <b>${minutes}</b> นาที <b>${seconds}</b> วินาที</span>`;
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff / 60000) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+    timerBox.textContent = `🕒 ไพ่ใบใหม่ในอีก ${h} ชม. ${m} นาที ${s} วินาที`;
   }
 }
 
@@ -60,44 +52,89 @@ function showCard(card) {
 function readDailyCard() {
   try {
     const stored = JSON.parse(localStorage.getItem('dailyCard'));
-    // อ่านจากชุดไพ่ในแอปเสมอ (กันข้อมูลใน localStorage ถูกแก้)
     return stored ? cards.find(c => c.name === stored.name) || null : null;
-  } catch {
-    return null;
+  } catch { return null; }
+}
+
+function ticks() {
+  let s = '';
+  for (let i = 0; i < 12; i++) s += `<i style="--a:${i * 30}deg;--delay:${(i * 0.13).toFixed(2)}s"></i>`;
+  return s;
+}
+
+function floaters() {
+  let s = '';
+  for (let i = 0; i < 14; i++) {
+    s += `<span class="float-spark" style="left:${8 + Math.random() * 84}%;top:${30 + Math.random() * 60}%;--size:${8 + Math.random() * 10}px;--d:${3 + Math.random() * 3}s;--delay:${-Math.random() * 5}s">✦</span>`;
   }
+  return s;
 }
 
 export function showCardPage() {
   trackPageView('/card', 'Card Page');
+  setNav('home');
   const root = getRoot();
   if (!root) return;
-  root.innerHTML = `
-    <div class="window">
-      <h1>ไพ่ของคุณ คือ</h1>
-      <div class="card-flip" id="flip-card">
-        <div class="card-inner">
-          <div class="card-front" id="card-front"></div>
-          <div class="card-back"></div>
-        </div>
-      </div>
-      <h2 id="card-title"></h2>
-      <p id="card-message"></p>
-      <p id="card-advice" class="card-advice-text"></p>
-    </div>
-    <div class="center-wrapper"><p id="countdown-timer" class="countdown-timer cute-timer" style="display:none;"></p></div>
-    <div class="button-group"><button id="btn-back"> กลับ</button>
-    <button id="btn-share-facebook">แชร์</button> </div>
-  `;
 
-  const flipCard = document.getElementById('flip-card');
   const dailyCardData = readDailyCard();
   const today = todayKey();
   const playerData = loadPlayerData();
+  const alreadyDrawn = playerData && playerData.lastCardDrawDate === today && dailyCardData;
+
+  root.innerHTML = `
+    <section class="ritual" id="ritual" data-step="${alreadyDrawn ? 'revealed' : 'summon'}">
+      <div class="ritual-title"><small>MAGIC BOOKS &amp; CANDLE</small><h1>ไพ่ภูติประจำวัน</h1></div>
+      <div class="ritual-glow"></div>
+      <div class="rays"></div>
+      <span class="ripple-ring"></span><span class="ripple-ring"></span><span class="ripple-ring"></span>
+      <div class="fan">
+        <div class="fan-card left"></div>
+        <div class="fan-card right"></div>
+        <div class="card-flip ${alreadyDrawn ? 'flipped' : ''}" id="flip-card">
+          <div class="card-inner">
+            <div class="card-front" id="card-front"></div>
+            <div class="card-back"></div>
+          </div>
+        </div>
+      </div>
+      <div class="summon" id="summon" role="button" aria-label="เรียกไพ่">
+        <div class="ticks">${ticks()}</div>
+        <div class="gem"></div>
+        <div class="core"></div>
+      </div>
+      <div class="ribbon"><h2 id="card-title"></h2></div>
+      <div class="sparkle-layer" id="sparkle-layer">${floaters()}</div>
+    </section>
+    <p class="tap-hint" id="tap-hint">${alreadyDrawn ? '' : '✦ แตะเพชรเพื่อเรียกไพ่ ✦'}</p>
+
+    <div class="window reading ${alreadyDrawn ? 'show' : ''}" id="reading">
+      <p id="card-message"></p>
+      <p id="card-advice" class="card-advice-text"></p>
+    </div>
+    <div class="center-wrapper"><p id="countdown-timer" class="countdown-timer" style="display:none;"></p></div>
+    <div class="button-group">
+      <button id="btn-back">กลับ</button>
+      <button id="btn-share-facebook">แชร์ไพ่</button>
+    </div>
+  `;
+
+  const ritual = document.getElementById('ritual');
+  const flipCard = document.getElementById('flip-card');
+  const hint = document.getElementById('tap-hint');
   let isDailyRewardGrantedOnFlip = false;
 
-  const handleCardFlip = () => {
+  const summon = () => {
+    if (ritual.dataset.step !== 'summon') return;
+    play(sfxPop);
+    haptic(15);
+    ritual.dataset.step = 'ready';
+    hint.textContent = '✦ แตะไพ่เพื่อเปิดคำทำนาย ✦';
+  };
+
+  const reveal = () => {
+    if (ritual.dataset.step !== 'ready') return;
     play(sfxSwipe);
-    flipCard.classList.add('flipped');
+    haptic([20, 40, 30]);
 
     const current = loadPlayerData();
     if (current.lastCardDrawDate !== today) {
@@ -106,26 +143,26 @@ export function showCardPage() {
       current.lastCardDrawDate = today;
       isDailyRewardGrantedOnFlip = true;
     }
-
     const card = cards[Math.floor(Math.random() * cards.length)];
     localStorage.setItem('dailyCard', JSON.stringify(card));
     if (!current.collectedCards.includes(card.name)) current.collectedCards.push(card.name);
     savePlayerData(current);
 
     showCard(card);
-    flipCard.style.pointerEvents = 'none';
-    flipCard.removeEventListener('click', handleCardFlip);
+    ritual.dataset.step = 'revealed';
+    flipCard.classList.add('flipped');
+    hint.textContent = '';
+    setTimeout(() => { burstIn(document.getElementById('sparkle-layer'), 40); play(sfxCollect); }, 450);
+    document.getElementById('reading').classList.add('show');
     startCountdown();
   };
 
-  if (playerData && playerData.lastCardDrawDate === today && dailyCardData) {
-    flipCard.classList.add('flipped');
+  if (alreadyDrawn) {
     showCard(dailyCardData);
-    flipCard.style.pointerEvents = 'none';
     startCountdown();
   } else {
-    flipCard.addEventListener('click', handleCardFlip);
-    flipCard.style.pointerEvents = 'auto';
+    document.getElementById('summon').addEventListener('click', summon);
+    flipCard.addEventListener('click', reveal);
   }
 
   setTimeout(() => {
@@ -134,23 +171,21 @@ export function showCardPage() {
       stopCountdown();
       playSlideTransition(() => showHome(isDailyRewardGrantedOnFlip));
     };
-    const shareButton = document.getElementById('btn-share-facebook');
-    if (shareButton) {
-      shareButton.onclick = () => {
-        play(sfxPop);
-        const cardToShare = readDailyCard();
-        if (!cardToShare) return alert('ไม่พบข้อมูลการ์ดที่จะแชร์ครับ');
-
-        const cardShareUrl = `${APP_URL}/.netlify/functions/share-card?name=${encodeURIComponent(cardToShare.name)}`;
-        const shareText = `วันนี้ฉันได้ไพ่ "${cardToShare.name}" จาก My Familiars!`;
-
-        if (navigator.share) {
-          navigator.share({ title: 'ไพ่ประจำวันของฉัน - My Familiars', text: shareText, url: cardShareUrl }).catch(() => {});
-        } else {
-          const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cardShareUrl)}&quote=${encodeURIComponent(shareText)}`;
-          window.open(fb, 'facebook-share-dialog', 'width=800,height=600,noopener');
-        }
-      };
-    }
+    document.getElementById('btn-share-facebook').onclick = () => {
+      play(sfxPop);
+      const cardToShare = readDailyCard();
+      if (!cardToShare || ritual.dataset.step !== 'revealed') {
+        hint.textContent = '✦ เปิดไพ่ก่อนแล้วค่อยแชร์นะ ✦';
+        return;
+      }
+      const cardShareUrl = `${APP_URL}/.netlify/functions/share-card?name=${encodeURIComponent(cardToShare.name)}`;
+      const shareText = `วันนี้ฉันได้ไพ่ "${cardToShare.name}" จาก My Familiars!`;
+      if (navigator.share) {
+        navigator.share({ title: 'ไพ่ประจำวันของฉัน - My Familiars', text: shareText, url: cardShareUrl }).catch(() => {});
+      } else {
+        const fb = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cardShareUrl)}&quote=${encodeURIComponent(shareText)}`;
+        window.open(fb, 'facebook-share-dialog', 'width=800,height=600,noopener');
+      }
+    };
   }, 30);
 }
